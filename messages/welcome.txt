@@ -1,0 +1,6 @@
+Welcome member.mention !!!!
+
+1)  Please make sure to go to the <#botchannel_id> and type the `?iam famfrit firstName lastName` command.
+Making sure to fill in firstName and lastName with your character name.
+
+2) Please make sure to go to the <#reactionrole_ch_id> and select all the roles that apply to you.
