@@ -23,7 +23,10 @@ class AnnouncePin(commands.Cog):
                 await r_message.pin()
         elif payload.emoji.name == "📣":
 
-            announce_ch_id = self.getDB("announce_channel")
+            dbobj = dbwrapper.DiscordDB()
+            dbobj.Connect()
+            announce_ch_id = str(dbobj.getDB("announce_channel"))
+
             if announce_ch_id is None:
                 await owner.send(
                     "(AnnouncePin) There was an error getting the Announce channel ID from DB"
@@ -37,6 +40,8 @@ class AnnouncePin(commands.Cog):
                             description=f"\n{r_message.content}",
                         )
                         await channel.send(embed=embed)
+
+            dbobj.Close()
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):

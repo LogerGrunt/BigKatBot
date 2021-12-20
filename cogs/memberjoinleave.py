@@ -22,7 +22,11 @@ class MemberJoinLeave(commands.Cog):
             owner = member.guild.get_member(
                 int(os.environ.get("ADMINID", 0))
             )  # your ID
-            channel_id = int(self.getDB("member_leave_channel"))
+
+            dbobj = dbwrapper.DiscordDB()
+            dbobj.Connect()
+            channel_id = str(dbobj.getDB("member_leave_channel"))
+
             if channel_id is None:
                 await owner.send(
                     "(on_member_remove) There was an error retrieving the channel ID from DB"
@@ -54,6 +58,8 @@ class MemberJoinLeave(commands.Cog):
 
                 # Send embed to channel
                 await channel.send(embed=embed)
+
+            dbobj.Close()
 
 
 def setup(bot):

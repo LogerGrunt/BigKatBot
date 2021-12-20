@@ -55,7 +55,21 @@ class ConfigureChannels(commands.Cog):
 
             dbobj.Close()
 
+    @announce_config.error
+    async def announce_config_error(self, error, ctx):
+        """
+        Error check, if command user is missing permission, error message
+        sent to command channel.
+        Command and error message are auto-deleted after 30 seconds to keep
+        channels clear of unnecessary error messages.
+        """
 
+        if isinstance(error, MissingPermissions):
+            await ctx.send(
+                "Sorry. You do not have permission to use that command.",
+                delete_after=30,
+            )
+            await ctx.message.delete(delay=30)
 
     """
     Configure command for updating member join announcement channel
