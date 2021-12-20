@@ -35,9 +35,14 @@ try:
 
     # Execute a query
 
-    cur.execute("INSERT INTO discordbot (keyname, value) VALUES ('Test1', 'test2')")
+    # cur.execute("INSERT INTO discordbot (keyname, value) VALUES ('Test1', 'test2')")
 
-    # Read
+    cur.execute(
+        "CREATE TABLE IF NOT EXISTS users (first_name text, last_name text, company text)"
+    )
+    cur.execute(
+        "INSERT INTO users (first_name, last_name, company) VALUES ('Sam', 'Pitcher', 'Looker')"
+    )
 
     print("SQL Passed.")
 except:
@@ -45,7 +50,21 @@ except:
     print("SQL Failed.")
 
 
-# result_set = cur.execute("SELECT * FROM discordbot")
+try:
 
-# for r in result_set:
-#    print(r)
+    # Open a cursor to perform database operations
+
+    cur = con.cursor()
+
+
+    # Read
+    result_set = cur.execute("SELECT * FROM users")
+    for r in result_set:
+        print(r)
+
+    # Read
+
+    print("SQL-1 Passed.")
+except:
+
+    print("SQL-1 Failed.")
