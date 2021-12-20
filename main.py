@@ -3,10 +3,13 @@ import nextcord
 import logging
 from nextcord.ext import commands
 import keep_alive
-import subprocess
+import psycopg2
+from urllib.parse import urlparse
 
-heroku_app_name = "bigkatbot"
-raw_db_url = subprocess.run(
-    ["heroku", "config:get", "DATABASE_URL", "--app", heroku_app_name],
-    capture_output=True  # capture_output arg is added in Python 3.7
-).stdout 
+try:
+    urlparse.uses_netloc.append("postgres") 
+    connection_params = urlparse.urlparse(os.environ["DATABASE_URL"])
+    db_connection = psycopg2.connect(database = connection_params.path[1:], user = connection_params.username, password = connection_params.password, host = connection_params.hostname, port = connection_params.port)
+	print "Database connection passed."
+except:
+    print "Database connection failed."
