@@ -33,7 +33,7 @@ class DiscordDB:
 
         self.cur = self.con.cursor()
 
-        self.cur.execute("DELETE FROM discordbot WHERE keyname=%s;", keyname)
+        self.cur.execute("DELETE FROM discordbot WHERE keyname='%s';", keyname)
         self.cur.execute(
             "INSERT INTO discordbot (keyname, value) VALUES (%s, %s);", (keyname, value)
         )
@@ -41,11 +41,11 @@ class DiscordDB:
     def getDB(self, keyname):
 
         print(keyname)
-        print("SELECT value FROM discordbot WHERE keyname=%s;" % (keyname))
+        print("SELECT value FROM discordbot WHERE keyname='%s';" % (keyname))
 
         self.cur = self.con.cursor()
 
-        self.cur.execute("SELECT value FROM discordbot WHERE keyname=%s;", (keyname))
+        self.cur.execute("SELECT value FROM discordbot WHERE keyname='%s';", (keyname))
         result = self.cur.fetchone()
 
         if result is not None:
