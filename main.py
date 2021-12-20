@@ -9,7 +9,6 @@ import keep_alive
 # import urllib.parse as urlparse
 from nextcord.ext import commands
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
 
 uri = os.getenv("DATABASE_URL")  # or other relevant config var
 if uri.startswith("postgres://"):
@@ -18,7 +17,7 @@ if uri.startswith("postgres://"):
 
 try:
 
-    db = scoped_session(sessionmaker(bind=uri))
+    db = create_engine(uri, echo=True)
 
     print("Database connection passed.")
 except:
@@ -26,22 +25,15 @@ except:
     print("Database connection failed.")
 
 
-try:
+db.execute(
+    "CREATE TABLE IF NOT EXISTS users (first_name text, last_name text, company text)"
+)
+db.commit()
 
-    db.execute(
-        "CREATE TABLE IF NOT EXISTS users (first_name text, last_name text, company text)"
-    )
-    db.commit()
-
-    db.execute(
-        "INSERT INTO users (first_name, last_name, company) VALUES ('Sam', 'Pitcher', 'Looker')"
-    )
-    db.commit()
-
-    print("SQL Passed.")
-except:
-
-    print("SQL Failed.")
+db.execute(
+    "INSERT INTO users (first_name, last_name, company) VALUES ('Sam', 'Pitcher', 'Looker')"
+)
+db.commit()
 
 
 try:
