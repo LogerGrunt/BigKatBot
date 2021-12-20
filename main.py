@@ -5,7 +5,8 @@ import re
 import nextcord
 import logging
 import keep_alive
-#import urllib.parse as urlparse
+
+# import urllib.parse as urlparse
 from nextcord.ext import commands
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -30,12 +31,12 @@ try:
     db.execute(
         "CREATE TABLE IF NOT EXISTS users (first_name text, last_name text, company text)"
     )
-	db.commit()
-	
+    db.commit()
+
     db.execute(
         "INSERT INTO users (first_name, last_name, company) VALUES ('Sam', 'Pitcher', 'Looker')"
     )
-	db.commit()
+    db.commit()
 
     print("SQL Passed.")
 except:
