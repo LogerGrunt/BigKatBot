@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions, MissingPermissions
 import dbwrapper
 
+
 class ConfigureChannels(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -36,7 +37,7 @@ class ConfigureChannels(commands.Cog):
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
             db_result = str(dbobj.getDB("announce_channel"))
-        
+
             if db_result == channel_id:
                 await ctx.send(
                     f"{channel_name} is already your set Announcements channel.",
@@ -51,7 +52,7 @@ class ConfigureChannels(commands.Cog):
                     delete_after=30,
                 )
             await ctx.message.delete(delay=30)
-            
+
             dbobj.Close()
 
     @announce_config.error
@@ -98,7 +99,7 @@ class ConfigureChannels(commands.Cog):
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
             db_result = str(dbobj.getDB("member_join_channel"))
-            
+
             if db_result == channel_id:
                 await ctx.send(
                     f"{channel_name} is already your set Member Join alerts channel.",
@@ -112,7 +113,7 @@ class ConfigureChannels(commands.Cog):
                     delete_after=30,
                 )
             await ctx.message.delete(delay=30)
-            
+
             dbobj.Close()
 
     @join_config.error
@@ -158,7 +159,7 @@ class ConfigureChannels(commands.Cog):
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
             db_result = str(dbobj.getDB("member_leave_channel"))
-            
+
             if db_result == channel_id:
                 await ctx.send(
                     f"{channel_name} is already your set Member leave alerts channel.",
@@ -166,13 +167,13 @@ class ConfigureChannels(commands.Cog):
                 )
             else:
                 dbobj.setDB("member_leave_channel", channel_id)
-                
+
                 await ctx.send(
                     f"Member leave alerts channel has been updated to:  {channel_name} (ID: {channel_id})",
                     delete_after=30,
                 )
             await ctx.message.delete(delay=30)
-            
+
             dbobj.Close()
 
     @leave_config.error
@@ -219,7 +220,7 @@ class ConfigureChannels(commands.Cog):
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
             db_result = str(dbobj.getDB("bot_channel"))
-            
+
             if db_result == channel_id:
                 await ctx.send(
                     f"{channel_name} is already your bot channel.",
@@ -227,13 +228,13 @@ class ConfigureChannels(commands.Cog):
                 )
             else:
                 dbobj.setDB("bot_channel", channel_id)
-                
+
                 await ctx.send(
                     f"Bot channel has been updated to:  {channel_name} (ID: {channel_id})",
                     delete_after=30,
-            )
+                )
         await ctx.message.delete(delay=30)
-        
+
         dbobj.Close()
 
     @leave_config.error
@@ -280,7 +281,7 @@ class ConfigureChannels(commands.Cog):
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
             db_result = str(dbobj.getDB("reactionrole_channel"))
-            
+
             if db_result == channel_id:
                 await ctx.send(
                     f"{channel_name} is already your reaction role channel.",
@@ -288,13 +289,13 @@ class ConfigureChannels(commands.Cog):
                 )
             else:
                 dbobj.setDB("reactionrole_channel", channel_id)
-                
+
                 await ctx.send(
                     f"Reaction role channel has been updated to:  {channel_name} (ID: {channel_id})",
                     delete_after=30,
                 )
             await ctx.message.delete(delay=30)
-            
+
             dbobj.Close()
 
     @leave_config.error
