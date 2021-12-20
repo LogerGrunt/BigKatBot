@@ -2,5 +2,4 @@ nextcord
 flask
 pynacl
 psycopg2
-urllib
 subprocess
