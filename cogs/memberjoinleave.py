@@ -25,7 +25,7 @@ class MemberJoinLeave(commands.Cog):
 
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
-            channel_id = str(dbobj.getDB("member_leave_channel"))
+            channel_id = int(dbobj.getDB("member_leave_channel"))
 
             if channel_id is None:
                 await owner.send(

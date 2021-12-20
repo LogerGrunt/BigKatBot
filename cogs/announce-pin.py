@@ -25,14 +25,14 @@ class AnnouncePin(commands.Cog):
 
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
-            announce_ch_id = str(dbobj.getDB("announce_channel"))
+            announce_ch_id = int(dbobj.getDB("announce_channel"))
 
             if announce_ch_id is None:
                 await owner.send(
                     "(AnnouncePin) There was an error getting the Announce channel ID from DB"
                 )
             for channel in guild.channels:
-                if str(channel.id) == announce_ch_id:
+                if channel.id == announce_ch_id:
                     if channel.permissions_for(member).send_messages:
 
                         embed = nextcord.Embed(
