@@ -36,22 +36,9 @@ class ConfigureChannels(commands.Cog):
 
             dbobj = dbwrapper.DiscordDB()
             dbobj.Connect()
-            db_result = str(dbobj.getDB("announce_channel"))
+            #db_result = str(dbobj.getDB("announce_channel"))
 
-            if db_result == channel_id:
-                await ctx.send(
-                    f"{channel_name} is already your set Announcements channel.",
-                    delete_after=30,
-                )
-
-            else:
-                dbobj.setDB("announce_channel", channel_id)
-
-                await ctx.send(
-                    f"Announcements channel has been updated to:  {channel_name} (ID: {channel_id})",
-                    delete_after=30,
-                )
-            await ctx.message.delete(delay=30)
+            db_result = dbobj.getDB("announce_channel")
 
             dbobj.Close()
 
