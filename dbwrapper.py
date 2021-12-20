@@ -33,7 +33,7 @@ class DiscordDB:
 
         self.cur = self.con.cursor()
 
-        self.cur.execute("DELETE FROM discordbot WHERE keyname='%s';", keyname)
+        self.cur.execute("DELETE FROM discordbot WHERE keyname=%s;", keyname)
         self.cur.execute(
             "INSERT INTO discordbot (keyname, value) VALUES (%s, %s);", (keyname, value)
         )
