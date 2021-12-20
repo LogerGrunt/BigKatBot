@@ -40,6 +40,9 @@ class DiscordDB:
 
     def getDB(self, keyname):
 
+        print(keyname)
+        print("SELECT value FROM discordbot WHERE keyname=%s;" % (keyname))
+
         self.cur = self.con.cursor()
 
         self.cur.execute("SELECT value FROM discordbot WHERE keyname=%s;", (keyname))
