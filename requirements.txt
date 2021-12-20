@@ -1,4 +1,4 @@
 nextcord
 flask
 pynacl
-psycopg2
+sqlalchemy
