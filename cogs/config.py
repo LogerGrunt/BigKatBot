@@ -3,6 +3,7 @@ from replit import db
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions, MissingPermissions
 
+
 class ConfigureChannels(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -178,7 +179,6 @@ class ConfigureChannels(commands.Cog):
             )
             await ctx.message.delete(delay=30)
 
-
     """
     Command for updating bot channel
     """
@@ -232,7 +232,6 @@ class ConfigureChannels(commands.Cog):
                 delete_after=30,
             )
             await ctx.message.delete(delay=30)
-
 
     """
     Command for updating reaction role channel
