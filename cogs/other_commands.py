@@ -3,18 +3,12 @@ import nextcord
 from replit import db
 from nextcord.ext import commands
 from nextcord.ext.commands import *
+import dbwrapper
 
 
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    # replit will return an error if a DB item doesn't already exist
-    def getDB(self, key):
-        if key not in db.keys():
-            return None
-        else:
-            return db[key]
 
     def getWelcomeMessage(self):
         with open("./messages/welcome.txt") as f:
@@ -44,7 +38,11 @@ class OtherCommands(commands.Cog):
         Member argument can be an ID, discord name, or mention
         """
         owner = member.guild.get_member(int(os.environ.get("ADMINID", 0)))  # your ID
-        channel_id = int(self.getDB("member_join_channel"))
+
+        dbobj = dbwrapper.DiscordDB()
+        dbobj.Connect()
+        channel_id = int(dbobj.getDB("member_join_channel"))
+
         if channel_id is None:
             await owner.send(
                 "(welcome_command) There was an error retrieving the channel ID (member_join_channel) from DB"
@@ -55,8 +53,8 @@ class OtherCommands(commands.Cog):
             old_role = nextcord.utils.get(guild.roles, name="Visitors")
             new_role = nextcord.utils.get(guild.roles, name="FC Members")
 
-            botchannel_id = str(self.getDB("bot_channel"))
-            reactionrole_ch_id = str(self.getDB("reactionrole_channel"))
+            botchannel_id = int(dbobj.getDB("bot_channel"))
+            reactionrole_ch_id = int(dbobj.getDB("reactionrole_channel"))
 
             if botchannel_id is None or reactionrole_ch_id is None:
                 await owner.send(
@@ -79,6 +77,8 @@ class OtherCommands(commands.Cog):
                     await member.remove_roles(old_role)
                     await member.add_roles(new_role)
                     await member_ch.send(message)
+
+        dbobj.Close()
 
     @welcome_command.error
     async def welcome_command_error(self, error, ctx):

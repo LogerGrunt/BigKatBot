@@ -3,13 +3,6 @@ import nextcord
 import logging
 from nextcord.ext import commands
 import keep_alive
-import dbwrapper
-
-test = dbwrapper.DiscordDB()
-test.Connect()
-test.setDB("A","B")
-test.getDB("A")
-test.Close()
 
 """
 Basic logging config

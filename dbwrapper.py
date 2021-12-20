@@ -46,9 +46,9 @@ class DiscordDB:
         result = self.cur.fetchone()
 
         if result is not None:
-            print(result[0])
+            return result[0]
         else:
-            print("nope")
+            return None
 
     def Close(self):
 

@@ -1,19 +1,11 @@
 import os
 import nextcord
-from replit import db
 from nextcord.ext import commands
 
 
 class MemberJoinLeave(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    # replit will return an error if a DB item doesn't already exist
-    def getDB(self, key):
-        if key not in db.keys():
-            return None
-        else:
-            return db[key]
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
