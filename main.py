@@ -8,6 +8,7 @@ import dbwrapper
 test = dbwrapper.DiscordDB()
 test.Connect()
 test.setDB("A","B")
+test.getDB("A")
 test.Close()
 
 """

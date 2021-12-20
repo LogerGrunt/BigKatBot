@@ -38,6 +38,18 @@ class DiscordDB:
             "INSERT INTO discordbot (keyname, value) VALUES (%s, %s);", (keyname, value)
         )
 
+    def getDB(self, keyname):
+
+        self.cur = self.con.cursor()
+
+        self.cur.execute("SELECT value FROM discordbot WHERE keyname=%s;", (keyname))
+        result = self.cur.fetchone()
+
+        if result is not None:
+            print(result[0])
+        else:
+            print("nope")
+
     def Close(self):
 
         self.con.close()
