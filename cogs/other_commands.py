@@ -39,7 +39,7 @@ class OtherCommands(commands.Cog):
 
         Member argument can be an ID, discord name, or mention
         '''
-        owner = member.guild.get_member(int(os.environ['ADMINID']))  # your ID
+        owner = member.guild.get_member(int(os.environ.get('ADMINID', 0)))  # your ID
         channel_id = int(self.getDB("member_join_channel"))
         if channel_id is None:
             await owner.send('(welcome_command) There was an error retrieving the channel ID (member_join_channel) from DB')

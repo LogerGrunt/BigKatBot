@@ -19,7 +19,7 @@ class AnnouncePin(commands.Cog):
     async def on_raw_reaction_add(self, payload):
         # Get information from reaction payload
         guild = self.bot.get_guild(payload.guild_id)
-        owner = guild.get_member(int(os.environ["ADMINID"]))  # put your Discord ID here
+        owner = guild.get_member(int(os.environ.get('ADMINID', 0)))  # put your Discord ID here
         r_channel = self.bot.get_channel(payload.channel_id)
         r_message = await r_channel.fetch_message(payload.message_id)
         member = nextcord.utils.find(lambda m: m.id == payload.user_id, guild.members)

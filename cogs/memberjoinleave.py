@@ -27,7 +27,7 @@ class MemberJoinLeave(commands.Cog):
         if member.bot:
             pass
         else:
-            owner = member.guild.get_member(int(os.environ["ADMINID"]))  # your ID
+            owner = member.guild.get_member(int(os.environ.get('ADMINID', 0)))  # your ID
             channel_id = int(self.getDB("member_leave_channel"))
             if channel_id is None:
                 await owner.send(

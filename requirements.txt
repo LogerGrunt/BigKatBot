@@ -1,3 +1,6 @@
 nextcord
 flask
 pynacl
+psycopg2
+urlparse
+subprocess
