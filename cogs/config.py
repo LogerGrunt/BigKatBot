@@ -39,7 +39,7 @@ class ConfigureChannels(commands.Cog):
             #db_result = str(dbobj.getDB("announce_channel"))
 
             db_result = dbobj.getDB("announce_channel")
-
+            print("test", 1, db_result)
             dbobj.Close()
 
 
