@@ -4,7 +4,6 @@ from threading import Thread
 """
 Required for starting the Flask application to keep bot open
 Uptimerobot.com set to ping the host every 20 minutes to prevent
-replit "timeout from inactivity'"
 """
 
 
