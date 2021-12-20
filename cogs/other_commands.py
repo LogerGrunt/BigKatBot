@@ -1,6 +1,5 @@
 import os
 import nextcord
-from replit import db
 from nextcord.ext import commands
 from nextcord.ext.commands import *
 import dbwrapper
