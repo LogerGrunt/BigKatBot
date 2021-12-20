@@ -1,7 +1,7 @@
 import os
 import nextcord
 from nextcord.ext import commands
-
+import dbwrapper
 
 class AnnouncePin(commands.Cog):
     def __init__(self, bot):
