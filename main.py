@@ -3,10 +3,10 @@
 import os
 import nextcord
 import logging
-from nextcord.ext import commands
 import keep_alive
 import psycopg2
-from urllib.parse import urlparse
+import urllib.parse as urlparse
+from nextcord.ext import commands
 
 url = urlparse.urlparse(os.environ["DATABASE_URL"])
 dbname = url.path[1:]
