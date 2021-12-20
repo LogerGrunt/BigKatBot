@@ -9,7 +9,7 @@ import psycopg2
 import urllib.parse as urlparse
 from nextcord.ext import commands
 
-class DBWrapper:
+class DiscordDB:
 
     def __init__(self):
         self.con = None

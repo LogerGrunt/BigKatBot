@@ -5,7 +5,7 @@ from nextcord.ext import commands
 import keep_alive
 import dbwrapper
 
-test = DBWrapper()
+test = dbwrapper.DiscordDB()
 test.Connect()
 test.setDB("A","B")
 test.Close()
