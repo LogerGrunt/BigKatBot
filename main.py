@@ -25,8 +25,18 @@ try:
     # Execute a query
     cur.execute("CREATE TABLE IF NOT EXISTS discordbot (keyname, value)")
 
-    print "Database connection passed."
+	cur.execute("INSERT INTO discordbot (keyname, value) VALUES ('Test1', 'test2')")
+	
+	# Read
+	result_set = cur.execute("SELECT * FROM discordbot")  
+	
+	for r in result_set:  
+		print(r)
+	
+	
+	
+    print("Database connection passed.")
 
 
 except:
-    print "Database connection failed."
+    print("Database connection failed.")
