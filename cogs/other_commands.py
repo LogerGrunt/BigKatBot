@@ -100,62 +100,62 @@ class OtherCommands(commands.Cog):
     # )
     # await ctx.message.delete(delay=30)
 
-    @commands.command(name="event")
-    @commands.has_permissions(manage_roles=True)
-    @commands.bot_has_permissions(manage_roles=True)
-    async def event_command(self, ctx, member: nextcord.Member):
-        """
-        Welcome command will remove the Visitors role and replace it with the
-        Members role for the targetted member.  It will also send a Welcome message (messages/welcome.txt)
-        to the member_join_channel (retrieved from DB)
+    # @commands.command(name="event")
+    # @commands.has_permissions(manage_roles=True)
+    # @commands.bot_has_permissions(manage_roles=True)
+    # async def event_command(self, ctx, member: nextcord.Member):
+        # """
+        # Welcome command will remove the Visitors role and replace it with the
+        # Members role for the targetted member.  It will also send a Welcome message (messages/welcome.txt)
+        # to the member_join_channel (retrieved from DB)
 
-        Member argument can be an ID, discord name, or mention
-        """
-        owner = member.guild.get_member(int(os.environ.get("ADMINID", 0)))  # your ID
+        # Member argument can be an ID, discord name, or mention
+        # """
+        # owner = member.guild.get_member(int(os.environ.get("ADMINID", 0)))  # your ID
 
-        dbobj = dbwrapper.DiscordDB()
-        dbobj.Connect()
-        channel_id = int(dbobj.getDB("member_join_channel"))
+        # dbobj = dbwrapper.DiscordDB()
+        # dbobj.Connect()
+        # channel_id = int(dbobj.getDB("member_join_channel"))
 
-        if channel_id is None:
-            await owner.send(
-                "(welcome_command) There was an error retrieving the channel ID (member_join_channel) from DB"
-            )
-        else:
-            member_ch = self.bot.get_channel(channel_id)
-            guild = ctx.guild
-            old_role = nextcord.utils.get(guild.roles, name="Visitors")
-            new_role = nextcord.utils.get(guild.roles, name="FC Members")
+        # if channel_id is None:
+            # await owner.send(
+                # "(welcome_command) There was an error retrieving the channel ID (member_join_channel) from DB"
+            # )
+        # else:
+            # member_ch = self.bot.get_channel(channel_id)
+            # guild = ctx.guild
+            # old_role = nextcord.utils.get(guild.roles, name="Visitors")
+            # new_role = nextcord.utils.get(guild.roles, name="FC Members")
 
-            botchannel_id = int(dbobj.getDB("bot_channel"))
-            reactionrole_ch_id = int(dbobj.getDB("reactionrole_channel"))
+            # botchannel_id = int(dbobj.getDB("bot_channel"))
+            # reactionrole_ch_id = int(dbobj.getDB("reactionrole_channel"))
 
-            if botchannel_id is None or reactionrole_ch_id is None:
-                await owner.send(
-                    "(welcome_command) There was an error retrieving the channel ID (botchannel_id) or (reactionrole_ch_id)  from DB"
-                )
+            # if botchannel_id is None or reactionrole_ch_id is None:
+                # await owner.send(
+                    # "(welcome_command) There was an error retrieving the channel ID (botchannel_id) or (reactionrole_ch_id)  from DB"
+                # )
 
-            else:
-                message = self.getWelcomeMessage()
-                message = (
-                    message.replace("member.mention", member.mention)
-                    .replace("botchannel_id", botchannel_id)
-                    .replace("reactionrole_ch_id", reactionrole_ch_id)
-                )
+            # else:
+                # message = self.getWelcomeMessage()
+                # message = (
+                    # message.replace("member.mention", member.mention)
+                    # .replace("botchannel_id", botchannel_id)
+                    # .replace("reactionrole_ch_id", reactionrole_ch_id)
+                # )
 
-                """
-              Check member for old role.  If exists, remove old role and add new role,
-              then send welcome message to member join channel
-              """
-                if old_role in member.roles:
-                    await member.remove_roles(old_role)
-                    await member.add_roles(new_role)
-                    await member_ch.send(message)
+                # """
+              # Check member for old role.  If exists, remove old role and add new role,
+              # then send welcome message to member join channel
+              # """
+                # if old_role in member.roles:
+                    # await member.remove_roles(old_role)
+                    # await member.add_roles(new_role)
+                    # await member_ch.send(message)
 
-        dbobj.Close()
+        # dbobj.Close()
 
     @commands.command(name="DM")
-    async def DM_command(ctx, user: discord.User, *, message=None):
+    async def DM_command(ctx, member: nextcord.Member, *, message=None):
         message = message or "This Message is sent via DM"
         await user.send(message)
 
