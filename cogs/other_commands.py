@@ -169,12 +169,17 @@ class OtherCommands(commands.Cog):
 
     # dbobj.Close()
 
+    # @commands.command(name="DM")
+    # async def DM_command(self, ctx, member: nextcord.Member, *, message=None):
+        # message = message or "This Message is sent via DM"
+        # await member.send(message)
+
+
     @commands.command(name="DM")
-    async def DM_command(self, ctx, member: nextcord.Member, *, message=None):
-        message = message or "This Message is sent via DM"
+    async def DM_command(self, ctx, *, message=None):
+        message = message or "No Message detected."
         await member.send(message)
-
-
+        
 # @commands.command(pass_context=True)
 # async def emoji(ctx):
 # msg = await bot.say("working")
