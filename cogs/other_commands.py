@@ -17,7 +17,7 @@ class OtherCommands(commands.Cog):
             message = f.read()
         return message
 
-    def emoji_from_name(name):
+    def emoji_from_name(self, name):
         return lookup(name.replace("_", " "))
     
     @commands.command(name="spank")
