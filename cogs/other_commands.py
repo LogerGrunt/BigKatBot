@@ -5,7 +5,6 @@ from nextcord.ext.commands import *
 import dbwrapper
 import traceback
 import sys
-from unicodedata import lookup
 import emoji as emojiLib
 
 class OtherCommands(commands.Cog):
@@ -17,9 +16,6 @@ class OtherCommands(commands.Cog):
             message = f.read()
         return message
 
-    def emoji_from_name(self, name):
-        return lookup(name.replace("_", " "))
-    
     @commands.command(name="spank")
     async def spank_command(self, ctx, member: nextcord.Member):
         guild = ctx.guild
@@ -131,16 +127,14 @@ class OtherCommands(commands.Cog):
         else:
             newMessage = await ctx.send(message)
 
-            # reactions = ["white_check_mark"]  # you can add more than one here
+            # reactions = ["white_check_mark"]
             reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]
             guild = ctx.guild
 
             for emoji in reactions:
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
                 print(1, emoji)
-                testObj = self.emoji_from_name(emoji)
-                print(2, testObj)
-                emojiChk = emojiLib.emojize(''.join(":"+emoji+":"))
+                emojiChk = emojiLib.emojize(''.join(":"+emoji+":"), use_aliases=True)
                 print('check', emojiChk)
                 
                 if emojiObj is not None:
