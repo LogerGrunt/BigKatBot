@@ -178,7 +178,7 @@ class OtherCommands(commands.Cog):
     @commands.command(name="DM")
     async def DM_command(self, ctx, *, message=None):
         message = message or "No Message detected."
-        await member.send(message)
+        await ctx.send(message)
         
 # @commands.command(pass_context=True)
 # async def emoji(ctx):
