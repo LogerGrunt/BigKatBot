@@ -136,6 +136,7 @@ class OtherCommands(commands.Cog):
                 print(1, emoji)
                 emojiChk = emojiLib.emojize(''.join(":"+emoji+":"), use_aliases=True)
                 print('check', emojiChk)
+                print('check2', str(emojiLib.is_emoji(emojiChk)))
                 
                 if emojiObj is not None:
                     await newMessage.add_reaction(emojiObj)
