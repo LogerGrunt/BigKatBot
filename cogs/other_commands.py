@@ -127,7 +127,12 @@ class OtherCommands(commands.Cog):
                 delete_after=30,
             )
         else:
-            newMessage = await ctx.send(message)
+            embed = nextcord.Embed(
+                title="Event!",
+                description=message,
+                color=0x40A923,
+            )
+            newMessage = await ctx.send(embed=embed)
 
             reactions = ["white_check_mark"]
             #reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]

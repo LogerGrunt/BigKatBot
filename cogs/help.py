@@ -40,6 +40,9 @@ class HelpCommand(commands.Cog):
                         `{ctx.prefix}welcome @member`
                         Removes Visitors Role and grants Member Role. Displays a welcome message.
 
+                        `{ctx.prefix}event msg`
+                        Creates an event message by the bot with a reaction checkmark.
+                        
                         `{ctx.prefix}set-announce [channelID]`
                         Set the general announcements channel by ID
 
