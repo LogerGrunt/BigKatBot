@@ -82,7 +82,7 @@ class OtherCommands(commands.Cog):
         dbobj.Close()
 
     @welcome_command.error
-    async def welcome_command_error(self, error, ctx):
+    async def welcome_command_error(self, ctx, error):
         """
         Error check, if command user or bot is missing permission, error message
         sent to command channel.
