@@ -6,7 +6,7 @@ import dbwrapper
 import traceback
 import sys
 from unicodedata import lookup
-import emoji
+import emoji as emojiLib
 
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
@@ -139,7 +139,7 @@ class OtherCommands(commands.Cog):
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
                 print(1, emoji)
                 #print(self.emoji_from_name(emoji))
-                emojiChk = emoji.emojize(emoji)
+                emojiChk = emojiLib.emojize(emoji)
                 print('check', emojiChk)
                 
                 if emojiObj is not None:
