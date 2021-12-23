@@ -115,7 +115,7 @@ class OtherCommands(commands.Cog):
                 type(error), error, error.__traceback__, file=sys.stderr
             )
 
-    #add_reactions 
+    # add_reactions
     @commands.command(name="event")
     async def event_command(self, ctx, *, message=None):
 
@@ -127,15 +127,21 @@ class OtherCommands(commands.Cog):
         else:
             newMessage = await ctx.send(message)
 
-            #reactions = ["white_check_mark"]  # you can add more than one here
+            # reactions = ["white_check_mark"]  # you can add more than one here
             reactions = ["white_check_mark", "stop_sign", "no_entry_sign"]
             guild = ctx.guild
-            
+
             for emoji in reactions:
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
+
                 if emojiObj is not None:
                     await newMessage.add_reaction(emojiObj)
-                    #msg.add_reaction('✓') await msg.add_reaction('❌')
+                    # msg.add_reaction('✓') await msg.add_reaction('❌')
+                    # emoji = get(bot.get_all_emojis(), name='EmojiName')
+                else:
+                    emojiObj = nextcord.utils.get(self.bot.emojis, name=emoji)
+                    if emojiObj is not None:
+                        await newMessage.add_reaction(emojiObj)
 
 
     async def event_command_error(self, ctx, error):
