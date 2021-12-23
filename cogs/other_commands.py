@@ -150,7 +150,8 @@ class OtherCommands(commands.Cog):
 
                     if emojiObj is not None:
                         await newMessage.add_reaction(emojiObj)
-
+                        
+            await ctx.message.delete(delay=30)
 
     async def event_command_error(self, ctx, error):
         """
