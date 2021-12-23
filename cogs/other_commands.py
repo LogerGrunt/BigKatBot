@@ -128,7 +128,7 @@ class OtherCommands(commands.Cog):
             newMessage = await ctx.send(message)
 
             #reactions = ["white_check_mark"]  # you can add more than one here
-            reactions = [":white_check_mark:", ":stop_sign:", ":no_entry_sign:"]
+            reactions = ["white_check_mark", "stop_sign", "no_entry_sign"]
             
             for emoji in reactions:
                 await newMessage.add_reaction(emoji)
