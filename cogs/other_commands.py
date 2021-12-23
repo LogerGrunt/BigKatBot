@@ -132,19 +132,16 @@ class OtherCommands(commands.Cog):
             guild = ctx.guild
 
             for emoji in reactions:
-                emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
-                print(1, emoji)
+                #check for unicode first
                 emojiChk = emojiLib.emojize(''.join(":"+emoji+":"), use_aliases=True)
-                print('check', emojiChk)
-                print('check2', str(emojiLib.is_emoji(emojiChk)))
                 
-                if emojiObj is not None:
-                    await newMessage.add_reaction(emojiObj)
+                if emojiChk is not None and emojiLib.is_emoji(emojiChk):
+                    await newMessage.add_reaction(emojiChk)
                     print('yes')
                     # msg.add_reaction('✓') await msg.add_reaction('❌')
                     # emoji = get(bot.get_all_emojis(), name='EmojiName')
                 else:
-                    emojiObj = nextcord.utils.get(self.bot.emojis, name=emoji)
+                    emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
                     print('entry')
                     if emojiObj is not None:
                         print('yes2')
