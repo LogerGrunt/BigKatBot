@@ -5,7 +5,8 @@ from nextcord.ext.commands import *
 import dbwrapper
 import traceback
 import sys
-
+from unicodedata import lookup
+import emoji
 
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
@@ -16,6 +17,9 @@ class OtherCommands(commands.Cog):
             message = f.read()
         return message
 
+    def emoji_from_name(name):
+        return lookup(name.replace("_", " "))
+    
     @commands.command(name="spank")
     async def spank_command(self, ctx, member: nextcord.Member):
         guild = ctx.guild
@@ -128,21 +132,27 @@ class OtherCommands(commands.Cog):
             newMessage = await ctx.send(message)
 
             # reactions = ["white_check_mark"]  # you can add more than one here
-            reactions = ["white_check_mark", "stop_sign", "no_entry_sign"]
+            reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]
             guild = ctx.guild
 
             for emoji in reactions:
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
-                print(emoji)
+                print(emoji, emoji_from_name(emoji))
+                emojiChk = emoji.emojize(emoji)
+                print('check', emojiChk)
                 
                 if emojiObj is not None:
                     await newMessage.add_reaction(emojiObj)
+                    print('yes')
                     # msg.add_reaction('✓') await msg.add_reaction('❌')
                     # emoji = get(bot.get_all_emojis(), name='EmojiName')
                 else:
                     emojiObj = nextcord.utils.get(self.bot.emojis, name=emoji)
+                    print('entry')
                     if emojiObj is not None:
+                        print('yes2')
                         await newMessage.add_reaction(emojiObj)
+                        #\N{combining enclosing keycap}
 
 
     async def event_command_error(self, ctx, error):
