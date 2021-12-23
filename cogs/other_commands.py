@@ -129,10 +129,13 @@ class OtherCommands(commands.Cog):
 
             #reactions = ["white_check_mark"]  # you can add more than one here
             reactions = ["white_check_mark", "stop_sign", "no_entry_sign"]
+            guild = ctx.guild
             
             for emoji in reactions:
-                await newMessage.add_reaction(emoji)
-                #msg.add_reaction('✓') await msg.add_reaction('❌')
+                emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
+                if emojiObj is not None:
+                    await newMessage.add_reaction(emojiObj)
+                    #msg.add_reaction('✓') await msg.add_reaction('❌')
 
 
     async def event_command_error(self, ctx, error):
