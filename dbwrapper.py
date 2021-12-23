@@ -8,7 +8,8 @@ import keep_alive
 import psycopg2
 import urllib.parse as urlparse
 from nextcord.ext import commands
-
+import traceback
+import sys
 
 class DiscordDB:
     def __init__(self):

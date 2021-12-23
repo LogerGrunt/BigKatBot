@@ -1,5 +1,7 @@
 from flask import Flask
 from threading import Thread
+import traceback
+import sys
 
 """
 Required for starting the Flask application to keep bot open

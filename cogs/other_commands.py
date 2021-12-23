@@ -108,7 +108,8 @@ class OtherCommands(commands.Cog):
         else:
             # All other Errors not returned come here. And we can just print the default TraceBack.
             print(
-                "Ignoring exception in command {}:".format(ctx.invoked_with), file=sys.stderr
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
             )
             traceback.print_exception(
                 type(error), error, error.__traceback__, file=sys.stderr
@@ -171,7 +172,15 @@ class OtherCommands(commands.Cog):
     @commands.command(name="DM")
     async def DM_command(ctx, member: nextcord.Member, *, message=None):
         message = message or "This Message is sent via DM"
-        await user.send(message)
+        await member.send(message)
+
+
+# @commands.command(pass_context=True)
+# async def emoji(ctx):
+# msg = await bot.say("working")
+# reactions = ['dart']
+# for emoji in reactions:
+# await bot.add_reaction(msg, emoji)
 
 
 def setup(bot):

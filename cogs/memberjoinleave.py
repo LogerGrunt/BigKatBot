@@ -2,6 +2,8 @@ import os
 import nextcord
 from nextcord.ext import commands
 import dbwrapper
+import traceback
+import sys
 
 class MemberJoinLeave(commands.Cog):
     def __init__(self, bot):

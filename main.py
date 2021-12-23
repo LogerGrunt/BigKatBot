@@ -3,6 +3,8 @@ import nextcord
 import logging
 from nextcord.ext import commands
 import keep_alive
+import traceback
+import sys
 
 """
 Basic logging config

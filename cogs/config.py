@@ -2,6 +2,8 @@ import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import has_permissions, MissingPermissions
 import dbwrapper
+import traceback
+import sys
 
 
 class ConfigureChannels(commands.Cog):
@@ -56,7 +58,7 @@ class ConfigureChannels(commands.Cog):
             dbobj.Close()
 
     @announce_config.error
-    async def announce_config_error(self, error, ctx):
+    async def announce_config_error(self, ctx, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
@@ -70,6 +72,15 @@ class ConfigureChannels(commands.Cog):
                 delete_after=30,
             )
             await ctx.message.delete(delay=30)
+        else:
+            # All other Errors not returned come here. And we can just print the default TraceBack.
+            print(
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
+            )
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr
+            )
 
     """
     Configure command for updating member join announcement channel
@@ -117,7 +128,7 @@ class ConfigureChannels(commands.Cog):
             dbobj.Close()
 
     @join_config.error
-    async def join_config_error(self, error, ctx):
+    async def join_config_error(self, ctx, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
@@ -130,6 +141,15 @@ class ConfigureChannels(commands.Cog):
                 delete_after=30,
             )
             await ctx.message.delete(delay=30)
+        else:
+            # All other Errors not returned come here. And we can just print the default TraceBack.
+            print(
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
+            )
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr
+            )
 
     """
     Command for updating member leave announcement channel
@@ -177,7 +197,7 @@ class ConfigureChannels(commands.Cog):
             dbobj.Close()
 
     @leave_config.error
-    async def leave_config_error(self, error, ctx):
+    async def leave_config_error(self, ctx, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
@@ -191,6 +211,15 @@ class ConfigureChannels(commands.Cog):
                 delete_after=30,
             )
             await ctx.message.delete(delay=30)
+        else:
+            # All other Errors not returned come here. And we can just print the default TraceBack.
+            print(
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
+            )
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr
+            )
 
     """
     Command for updating bot channel
@@ -238,7 +267,7 @@ class ConfigureChannels(commands.Cog):
         dbobj.Close()
 
     @leave_config.error
-    async def botchannel_config_error(self, error, ctx):
+    async def botchannel_config_error(self, ctx, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
@@ -252,6 +281,15 @@ class ConfigureChannels(commands.Cog):
                 delete_after=30,
             )
             await ctx.message.delete(delay=30)
+        else:
+            # All other Errors not returned come here. And we can just print the default TraceBack.
+            print(
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
+            )
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr
+            )
 
     """
     Command for updating reaction role channel
@@ -299,7 +337,7 @@ class ConfigureChannels(commands.Cog):
             dbobj.Close()
 
     @leave_config.error
-    async def reactionrolechannel_config_error(self, error, ctx):
+    async def reactionrolechannel_config_error(self, ctx, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
@@ -313,6 +351,15 @@ class ConfigureChannels(commands.Cog):
                 delete_after=30,
             )
             await ctx.message.delete(delay=30)
+        else:
+            # All other Errors not returned come here. And we can just print the default TraceBack.
+            print(
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
+            )
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr
+            )
 
 
 def setup(bot):
