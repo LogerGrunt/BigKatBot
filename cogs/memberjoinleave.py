@@ -18,50 +18,50 @@ class MemberJoinLeave(commands.Cog):
         is sent to the configured channel - see `set` command to update channel.
         """
         # Get channel ID from config.json
-        if member.bot:
-            pass
+        # if member.bot:
+            # pass
+        # else:
+        owner = member.guild.get_member(
+            int(os.environ.get("ADMINID", 0))
+        )  # your ID
+
+        dbobj = dbwrapper.DiscordDB()
+        dbobj.Connect()
+        channel_id = int(dbobj.getDB("member_leave_channel"))
+
+        if channel_id is None:
+            await owner.send(
+                "(on_member_remove) There was an error retrieving the channel ID from DB"
+            )
         else:
-            owner = member.guild.get_member(
-                int(os.environ.get("ADMINID", 0))
-            )  # your ID
+            # Get channel object from ID stored in config.json
+            channel = self.bot.get_channel(channel_id)
 
-            dbobj = dbwrapper.DiscordDB()
-            dbobj.Connect()
-            channel_id = int(dbobj.getDB("member_leave_channel"))
+            # Get member info - joined date and ccount created date
+            joined_at = member.joined_at.strftime("%d %b %Y")
+            created_at = member.created_at.strftime("%d %b %Y")
 
-            if channel_id is None:
-                await owner.send(
-                    "(on_member_remove) There was an error retrieving the channel ID from DB"
-                )
+            # Create the embedded message
+            embed = nextcord.Embed(
+                title=f"{member.display_name} left the server!", color=0xC60000
+            )
+            if member.avatar is not None:
+                embed.set_thumbnail(url=member.avatar.url)
             else:
-                # Get channel object from ID stored in config.json
-                channel = self.bot.get_channel(channel_id)
-
-                # Get member info - joined date and ccount created date
-                joined_at = member.joined_at.strftime("%d %b %Y")
-                created_at = member.created_at.strftime("%d %b %Y")
-
-                # Create the embedded message
-                embed = nextcord.Embed(
-                    title=f"{member.display_name} left the server!", color=0xC60000
+                embed.set_thumbnail(
+                    url="https://www.iconspng.com/uploads/primary-unknown/primary-unknown.png"
                 )
-                if member.avatar is not None:
-                    embed.set_thumbnail(url=member.avatar.url)
-                else:
-                    embed.set_thumbnail(
-                        url="https://www.iconspng.com/uploads/primary-unknown/primary-unknown.png"
-                    )
-                embed.add_field(
-                    name="User", value=f"{member.mention}\n{member}", inline=False
-                )
-                embed.add_field(name="Account Creation", value=created_at, inline=False)
-                embed.add_field(name=f"Join Date", value=joined_at, inline=False)
-                embed.set_footer(text=f"ID: {member.id}")
+            embed.add_field(
+                name="User", value=f"{member.mention}\n{member}", inline=False
+            )
+            embed.add_field(name="Account Creation", value=created_at, inline=False)
+            embed.add_field(name=f"Join Date", value=joined_at, inline=False)
+            embed.set_footer(text=f"ID: {member.id}")
 
-                # Send embed to channel
-                await channel.send(embed=embed)
+            # Send embed to channel
+            await channel.send(embed=embed)
 
-            dbobj.Close()
+        dbobj.Close()
 
 
 def setup(bot):
