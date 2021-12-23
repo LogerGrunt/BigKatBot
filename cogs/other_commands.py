@@ -100,6 +100,7 @@ class OtherCommands(commands.Cog):
     # )
     # await ctx.message.delete(delay=30)
 
+
     # @commands.command(name="event")
     # @commands.has_permissions(manage_roles=True)
     # @commands.bot_has_permissions(manage_roles=True)
@@ -153,6 +154,7 @@ class OtherCommands(commands.Cog):
                     # await member_ch.send(message)
 
         # dbobj.Close()
+
 
     @commands.command(name="DM")
     async def DM_command(ctx, member: nextcord.Member, *, message=None):
