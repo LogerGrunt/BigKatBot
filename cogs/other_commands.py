@@ -54,8 +54,8 @@ class OtherCommands(commands.Cog):
             old_role = nextcord.utils.get(guild.roles, name="Visitors")
             new_role = nextcord.utils.get(guild.roles, name="FC Members")
 
-            botchannel_id = int(dbobj.getDB("bot_channel"))
-            reactionrole_ch_id = int(dbobj.getDB("reactionrole_channel"))
+            botchannel_id = str(dbobj.getDB("bot_channel"))
+            reactionrole_ch_id = str(dbobj.getDB("reactionrole_channel"))
 
             if botchannel_id is None or reactionrole_ch_id is None:
                 await owner.send(
@@ -170,7 +170,7 @@ class OtherCommands(commands.Cog):
     # dbobj.Close()
 
     @commands.command(name="DM")
-    async def DM_command(ctx, member: nextcord.Member, *, message=None):
+    async def DM_command(self, ctx, member: nextcord.Member, *, message=None):
         message = message or "This Message is sent via DM"
         await member.send(message)
 
