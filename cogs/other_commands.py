@@ -137,7 +137,7 @@ class OtherCommands(commands.Cog):
 
             for emoji in reactions:
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
-                print(emoji, emoji_from_name(emoji))
+                print(emoji, self.emoji_from_name(emoji))
                 emojiChk = emoji.emojize(emoji)
                 print('check', emojiChk)
                 
