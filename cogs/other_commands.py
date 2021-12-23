@@ -115,8 +115,10 @@ class OtherCommands(commands.Cog):
                 type(error), error, error.__traceback__, file=sys.stderr
             )
 
-    # add_reactions
+    # add event with a reaction
     @commands.command(name="event")
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True, add_reactions=True)  
     async def event_command(self, ctx, *, message=None):
 
         if message is None:
@@ -127,8 +129,8 @@ class OtherCommands(commands.Cog):
         else:
             newMessage = await ctx.send(message)
 
-            # reactions = ["white_check_mark"]
-            reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]
+            reactions = ["white_check_mark"]
+            #reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]
             guild = ctx.guild
 
             for emoji in reactions:
@@ -137,16 +139,12 @@ class OtherCommands(commands.Cog):
                 
                 if emojiChk is not None and emojiLib.is_emoji(emojiChk):
                     await newMessage.add_reaction(emojiChk)
-                    print('yes')
                     # msg.add_reaction('✓') await msg.add_reaction('❌')
-                    # emoji = get(bot.get_all_emojis(), name='EmojiName')
                 else:
                     emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
-                    print('entry')
+
                     if emojiObj is not None:
-                        print('yes2')
                         await newMessage.add_reaction(emojiObj)
-                        #\N{combining enclosing keycap}
 
 
     async def event_command_error(self, ctx, error):
