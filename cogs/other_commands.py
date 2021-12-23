@@ -115,81 +115,53 @@ class OtherCommands(commands.Cog):
                 type(error), error, error.__traceback__, file=sys.stderr
             )
 
-    # @commands.command(name="event")
-    # @commands.has_permissions(manage_roles=True)
-    # @commands.bot_has_permissions(manage_roles=True)
-    # async def event_command(self, ctx, member: nextcord.Member):
-    # """
-    # Welcome command will remove the Visitors role and replace it with the
-    # Members role for the targetted member.  It will also send a Welcome message (messages/welcome.txt)
-    # to the member_join_channel (retrieved from DB)
+    @commands.command(name="event")
+    async def event_command(self, ctx, *, message=None):
 
-    # Member argument can be an ID, discord name, or mention
-    # """
-    # owner = member.guild.get_member(int(os.environ.get("ADMINID", 0)))  # your ID
+        if message is None:
+            await ctx.send(
+                "Sorry. There is no message to process.",
+                delete_after=30,
+            )
+        else:
+            newMessage = await ctx.send(message)
 
-    # dbobj = dbwrapper.DiscordDB()
-    # dbobj.Connect()
-    # channel_id = int(dbobj.getDB("member_join_channel"))
+            reactions = ["white_check_mark"]  # you can add more than one here
+            for emoji in reactions:
+                await self.bot.add_reaction(newMessage, emoji)
 
-    # if channel_id is None:
-    # await owner.send(
-    # "(welcome_command) There was an error retrieving the channel ID (member_join_channel) from DB"
-    # )
-    # else:
-    # member_ch = self.bot.get_channel(channel_id)
-    # guild = ctx.guild
-    # old_role = nextcord.utils.get(guild.roles, name="Visitors")
-    # new_role = nextcord.utils.get(guild.roles, name="FC Members")
+    async def event_command_error(self, ctx, error):
+        """
+        Error check, if command user or bot is missing permission, error message
+        sent to command channel.
+        Command and error message are auto-deleted after 30 seconds to keep
+        channels clear of unnecessary error messages.
+        """
 
-    # botchannel_id = int(dbobj.getDB("bot_channel"))
-    # reactionrole_ch_id = int(dbobj.getDB("reactionrole_channel"))
+        # Allows us to check for original exceptions raised and sent to CommandInvokeError.
+        # If nothing is found. We keep the exception passed to on_command_error.
+        error = getattr(error, "original", error)
 
-    # if botchannel_id is None or reactionrole_ch_id is None:
-    # await owner.send(
-    # "(welcome_command) There was an error retrieving the channel ID (botchannel_id) or (reactionrole_ch_id)  from DB"
-    # )
-
-    # else:
-    # message = self.getWelcomeMessage()
-    # message = (
-    # message.replace("member.mention", member.mention)
-    # .replace("botchannel_id", botchannel_id)
-    # .replace("reactionrole_ch_id", reactionrole_ch_id)
-    # )
-
-    # """
-    # Check member for old role.  If exists, remove old role and add new role,
-    # then send welcome message to member join channel
-    # """
-    # if old_role in member.roles:
-    # await member.remove_roles(old_role)
-    # await member.add_roles(new_role)
-    # await member_ch.send(message)
-
-    # dbobj.Close()
-
-    # @commands.command(name="DM")
-    # async def DM_command(self, ctx, member: nextcord.Member, *, message=None):
-        # message = message or "This Message is sent via DM"
-        # await member.send(message)
-
-
-    @commands.command(name="DM")
-    async def DM_command(self, ctx, *, message=None):
-        message = message or "No Message detected."
-        newMessage = await ctx.send(message)
-
-        reactions = ['white_check_mark'] #you can add more than one here
-        for emoji in reactions:
-        await self.bot.add_reaction(newMessage, emoji)   
-        
-# @commands.command(pass_context=True)
-# async def emoji(ctx):
-# msg = await bot.say("working")
-# reactions = ['dart']
-# for emoji in reactions:
-# await bot.add_reaction(msg, emoji)
+        if isinstance(error, MissingPermissions):
+            await ctx.send(
+                "Sorry. You do not have permission to use that command.",
+                delete_after=30,
+            )
+            await ctx.message.delete(delay=30)
+        elif isinstance(error, BotMissingPermissions):
+            await ctx.send(
+                "The bot is missing 'Manage Roles' permission.", delete_after=30
+            )
+            await ctx.message.delete(delay=30)
+        else:
+            # All other Errors not returned come here. And we can just print the default TraceBack.
+            print(
+                "Ignoring exception in command {}:".format(ctx.invoked_with),
+                file=sys.stderr,
+            )
+            traceback.print_exception(
+                type(error), error, error.__traceback__, file=sys.stderr
+            )
 
 
 def setup(bot):
