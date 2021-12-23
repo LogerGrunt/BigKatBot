@@ -138,8 +138,9 @@ class OtherCommands(commands.Cog):
             for emoji in reactions:
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
                 print(1, emoji)
-                #print(self.emoji_from_name(emoji))
-                emojiChk = emojiLib.emojize(emoji)
+                testObj = self.emoji_from_name(emoji)
+                print(2, testObj)
+                emojiChk = emojiLib.emojize(''.join(":"+emoji+":"))
                 print('check', emojiChk)
                 
                 if emojiObj is not None:
