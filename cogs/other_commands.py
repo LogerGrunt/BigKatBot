@@ -115,6 +115,7 @@ class OtherCommands(commands.Cog):
                 type(error), error, error.__traceback__, file=sys.stderr
             )
 
+    #add_reactions 
     @commands.command(name="event")
     async def event_command(self, ctx, *, message=None):
 
@@ -126,9 +127,13 @@ class OtherCommands(commands.Cog):
         else:
             newMessage = await ctx.send(message)
 
-            reactions = ["white_check_mark"]  # you can add more than one here
+            #reactions = ["white_check_mark"]  # you can add more than one here
+            reactions = [":white_check_mark:", ":stop_sign:", ":no_entry_sign:"]
+            
             for emoji in reactions:
-                await self.bot.add_reaction(newMessage, emoji)
+                await newMessage.add_reaction(emoji)
+                #msg.add_reaction('✓') await msg.add_reaction('❌')
+
 
     async def event_command_error(self, ctx, error):
         """
