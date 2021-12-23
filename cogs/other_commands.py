@@ -133,7 +133,8 @@ class OtherCommands(commands.Cog):
 
             for emoji in reactions:
                 emojiObj = nextcord.utils.get(guild.emojis, name=emoji)
-
+                print(emoji)
+                
                 if emojiObj is not None:
                     await newMessage.add_reaction(emojiObj)
                     # msg.add_reaction('✓') await msg.add_reaction('❌')
