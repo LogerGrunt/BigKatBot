@@ -4,3 +4,6 @@ Welcome member.mention !!!!
 Making sure to fill in firstName and lastName with your character name.
 
 2) Please make sure to go to the <#reactionrole_ch_id> and select all the roles that apply to you.
+In order to assign a role, simply **click** on the `reaction icons (emoji) found under each category post` corresponding to the role you want assigned.  You will get a **Direct Message** from the bot confirming each role you selected.
+
+**Note:** You may have to scroll to the very top of the <#reactionrole_ch_id> channel to see all the categories.
