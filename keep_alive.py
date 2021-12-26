@@ -11,13 +11,13 @@ Uptimerobot.com set to ping the host every 20 minutes to prevent
 """
 
 
-app = Flask("")
+app = Flask(__name__, template_folder='uptime')
 
 
 @app.route("/")
 def main():
     #return "Your bot is online!"
-    return render_template("uptime/home.html")
+    return render_template("home.html")
 
 
 def run():
