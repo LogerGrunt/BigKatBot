@@ -77,7 +77,8 @@ class OtherCommands(commands.Cog):
                 if old_role in member.roles:
                     await member.remove_roles(old_role)
                     await member.add_roles(new_role)
-                    await member_ch.send(message)
+                    await member.send(message) #send a Direct Message
+                    await member_ch.send(message) #send a message to the member_join_channel channel
 
         dbobj.Close()
 
