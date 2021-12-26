@@ -42,6 +42,6 @@ async def on_ready():
 
 if __name__ == "__main__":
     # Setup Flask webserver for 24/7 uptime with Uptimerobot pinging every 20 minutes
-    #keep_alive.keep_alive()
+    keep_alive.keep_alive()
     my_secret = os.environ.get("TOKEN", None)
     bot.run(my_secret)

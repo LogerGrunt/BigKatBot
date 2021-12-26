@@ -2,6 +2,7 @@ from flask import Flask
 from threading import Thread
 import traceback
 import sys
+import os
 
 """
 Required for starting the Flask application to keep bot open
@@ -18,8 +19,7 @@ def main():
 
 
 def run():
-    app.run(host="0.0.0.0", port=8080)
-
+    app.run(port=int(os.environ.get("PORT", 5000)), host='0.0.0.0')
 
 def keep_alive():
     server = Thread(target=run)
