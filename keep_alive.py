@@ -1,5 +1,4 @@
 from flask import Flask
-from flask import render_template
 from threading import Thread
 import traceback
 import sys
@@ -16,8 +15,7 @@ app = Flask("")
 
 @app.route("/")
 def main():
-    #return "Your bot is online!"
-    return render_template("home.html")
+    return "Your bot is online!"
 
 
 def run():
