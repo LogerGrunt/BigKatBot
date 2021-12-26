@@ -15,13 +15,14 @@ app = Flask("")
 
 @app.route("/")
 def main():
-    return "Your bot is online!"
+    #return "Your bot is online!"
+    return render_template("uptime/home.html")
 
 
 def run():
     app.run(port=int(os.environ.get("PORT", 5000)), host='0.0.0.0')
     #app.run(port=8080, host='0.0.0.0')
-    print('Keep Alive is Up')
+    #https://stackoverflow.com/questions/18374138/how-to-show-index-html-page-in-heroku-using-python-flask
 
 def keep_alive():
     server = Thread(target=run)
