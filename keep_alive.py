@@ -11,7 +11,7 @@ Uptimerobot.com set to ping the host every 20 minutes to prevent
 """
 
 
-app = Flask(__name__, template_folder='uptime')
+app = Flask("")
 
 
 @app.route("/")
