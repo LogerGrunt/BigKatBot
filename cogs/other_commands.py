@@ -225,7 +225,7 @@ class OtherCommands(commands.Cog):
                 )
 
             else:
-                message = self.gettestmeMessage()
+                message = self.getWelcomeMessage()
                 message = (
                     message.replace("member.mention", member.mention)
                     .replace("botchannel_id", botchannel_id)
