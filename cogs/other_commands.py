@@ -136,7 +136,7 @@ class OtherCommands(commands.Cog):
         else:
             embed = nextcord.Embed(
                 title="[Custom Event]",
-                description=" ",
+                description=None,
                 color=0x40A923,
             )
             embed.add_field(name="Author:", value=ctx.author.mention, inline=False)
@@ -147,7 +147,7 @@ class OtherCommands(commands.Cog):
             created_on = now.strftime("%m/%d/%Y, %-I:%M:%S %p %Z")
 
             embed.add_field(name="Start Date/Time:", value=created_on, inline=False)
-            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name = chr(173), value = chr(173)) #add empty space
 
             embed.add_field(name="Message:", value=message, inline=False)
             newMessage = await ctx.send(embed=embed)
