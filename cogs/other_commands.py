@@ -135,8 +135,8 @@ class OtherCommands(commands.Cog):
             )
         else:
             embed = nextcord.Embed(
-                title="[Custom Event]",
-                description='\n',
+                title="Custom Event",
+                description='\n\n',
                 color=0x40A923,
             )
             embed.add_field(name="Author:", value=ctx.author.mention, inline=False)
