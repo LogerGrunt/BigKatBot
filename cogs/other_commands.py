@@ -7,6 +7,7 @@ import traceback
 import sys
 import emoji as emojiLib
 from datetime import datetime
+import pytz
 
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
@@ -132,14 +133,17 @@ class OtherCommands(commands.Cog):
         else:
             embed = nextcord.Embed(
                 title="[Custom Event]",
-                description=message,
+                description=" ",
                 color=0x40A923,
             )
             embed.add_field(name="Author:", value=ctx.author.mention, inline=False)
             
-            now = datetime.now() # current date and time
-            created_on = now.strftime("%m/%d/%Y, %-I:%M:%S %p")
+            now = datetime.now(pytz.timezone("America/New_York")) # current date and time / Eastern
+            created_on = now.strftime("%m/%d/%Y, %-I:%M:%S %p %Z")
+
             embed.add_field(name="Start Date/Time:", value=created_on, inline=False)
+            embed.add_field(name=" ", value=" ", inline=False)
+            embed.add_field(name="Message:", value=message, inline=False)
             
             newMessage = await ctx.send(embed=embed)
 
