@@ -146,8 +146,8 @@ class OtherCommands(commands.Cog):
             )  # current date and time / Eastern
             created_on = now.strftime("%m/%d/%Y, %-I:%M:%S %p %Z")
 
-            embed.add_field(name="Start Date/Time:", value=created_on, inline=False)
-            embed.add_field(name = chr(173), value = chr(173)) #add empty space
+            embed.add_field(name="Start Date/Time:", value=created_on+'\n', inline=False)
+            #embed.add_field(name = chr(173), value = chr(173)) #add empty space
 
             embed.add_field(name="Message:", value=message, inline=False)
             newMessage = await ctx.send(embed=embed)
