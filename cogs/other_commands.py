@@ -135,8 +135,8 @@ class OtherCommands(commands.Cog):
             )
         else:
             embed = nextcord.Embed(
-                title=":calendar_spiral: Custom Event :pushpin:",
-                description='\n\n',
+                title=":calendar_spiral: Custom Event",
+                description=chr(173),
                 color=0x40A923,
             )
             embed.add_field(name="Author:", value=ctx.author.mention, inline=False)
