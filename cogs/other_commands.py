@@ -6,6 +6,7 @@ import dbwrapper
 import traceback
 import sys
 import emoji as emojiLib
+from datetime import datetime
 
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
@@ -81,7 +82,7 @@ class OtherCommands(commands.Cog):
                     await member_ch.send(message) #send a message to the member_join_channel channel
 
         dbobj.Close()
-        await ctx.message.delete(delay=30)
+        await ctx.message.delete(delay=5)
 
     @welcome_command.error
     async def welcome_command_error(self, ctx, error):
@@ -130,10 +131,16 @@ class OtherCommands(commands.Cog):
             )
         else:
             embed = nextcord.Embed(
-                title="Event!",
+                title="[Custom Event]",
                 description=message,
                 color=0x40A923,
             )
+            embed.add_field(name="Author:", value=ctx.author.mention, inline=False)
+            
+            now = datetime.now() # current date and time
+            created_on = now.strftime("%m/%d/%Y, %-I:%M:%S %p")
+            embed.add_field(name="Start Date/Time:", value=created_on, inline=False)
+            
             newMessage = await ctx.send(embed=embed)
 
             reactions = ["white_check_mark"]
@@ -153,7 +160,7 @@ class OtherCommands(commands.Cog):
                     if emojiObj is not None:
                         await newMessage.add_reaction(emojiObj)
                         
-            await ctx.message.delete(delay=30)
+            await ctx.message.delete(delay=5)
 
     async def event_command_error(self, ctx, error):
         """
