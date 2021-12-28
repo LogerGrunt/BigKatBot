@@ -9,6 +9,7 @@ import emoji as emojiLib
 from datetime import datetime
 import pytz
 
+
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -79,8 +80,10 @@ class OtherCommands(commands.Cog):
                 if old_role in member.roles:
                     await member.remove_roles(old_role)
                     await member.add_roles(new_role)
-                    await member.send(message) #send a Direct Message
-                    await member_ch.send(message) #send a message to the member_join_channel channel
+                    await member.send(message)  # send a Direct Message
+                    await member_ch.send(
+                        message
+                    )  # send a message to the member_join_channel channel
 
         dbobj.Close()
         await ctx.message.delete(delay=5)
@@ -122,7 +125,7 @@ class OtherCommands(commands.Cog):
     # add event with a reaction
     @commands.command(name="event")
     @commands.has_permissions(manage_roles=True)
-    @commands.bot_has_permissions(manage_roles=True, add_reactions=True)  
+    @commands.bot_has_permissions(manage_roles=True, add_reactions=True)
     async def event_command(self, ctx, *, message=None):
 
         if message is None:
@@ -137,22 +140,24 @@ class OtherCommands(commands.Cog):
                 color=0x40A923,
             )
             embed.add_field(name="Author:", value=ctx.author.mention, inline=False)
-            
-            now = datetime.now(pytz.timezone("America/New_York")) # current date and time / Eastern
+
+            now = datetime.now(
+                pytz.timezone("America/New_York")
+            )  # current date and time / Eastern
             created_on = now.strftime("%m/%d/%Y, %-I:%M:%S %p %Z")
 
             embed.add_field(name="Start Date/Time:", value=created_on, inline=False)
             embed.add_field(name=" ", value=" ", inline=False)
+
             embed.add_field(name="Message:", value=message, inline=False)
-            
             newMessage = await ctx.send(embed=embed)
 
             reactions = ["white_check_mark"]
-            #reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]
+            # reactions = ["white_check_mark", "stop_sign", "no_entry_sign", "spanksmirk"]
             guild = ctx.guild
 
             for emoji in reactions:
-                #check for unicode first
+                # check for unicode first
                 emojiChk = emojiLib.emojize(''.join(":"+emoji+":"), use_aliases=True)
                 
                 if emojiChk is not None and emojiLib.is_emoji(emojiChk):
@@ -163,7 +168,7 @@ class OtherCommands(commands.Cog):
 
                     if emojiObj is not None:
                         await newMessage.add_reaction(emojiObj)
-                        
+
             await ctx.message.delete(delay=5)
 
     async def event_command_error(self, ctx, error):
