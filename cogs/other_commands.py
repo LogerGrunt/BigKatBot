@@ -135,7 +135,7 @@ class OtherCommands(commands.Cog):
             )
         else:
             embed = nextcord.Embed(
-                title="Custom Event",
+                title=":calendar_spiral: Custom Event :pushpin:",
                 description='\n\n',
                 color=0x40A923,
             )
