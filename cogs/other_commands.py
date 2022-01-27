@@ -84,6 +84,11 @@ class OtherCommands(commands.Cog):
                     await member_ch.send(
                         message
                     )  # send a message to the member_join_channel channel
+                else:
+                    await owner.send(
+                        "(welcome_command) User did not have the 'Visitors' role."
+                    )                    
+
 
         dbobj.Close()
         await ctx.message.delete(delay=5)
