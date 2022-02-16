@@ -80,15 +80,17 @@ class OtherCommands(commands.Cog):
                 if old_role in member.roles:
                     await member.remove_roles(old_role)
                     await member.add_roles(new_role)
-                    await member.send(message)  # send a Direct Message
                     await member_ch.send(
                         message
                     )  # send a message to the member_join_channel channel
+                    try:
+                        await member.send(message) #sometimes the bot cannot send messages to user so lets check
+                    except Exception: 
+                        pass
                 else:
                     await owner.send(
                         "(welcome_command) User did not have the 'Visitors' role."
                     )                    
-
 
         dbobj.Close()
         await ctx.message.delete(delay=5)
