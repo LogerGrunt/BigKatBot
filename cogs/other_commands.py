@@ -29,13 +29,15 @@ class OtherCommands(commands.Cog):
             color=0x40A923,
         )
         await ctx.send(embed=embed)
-
+    
     @commands.command(name="getinfousers")
+    @commands.has_permissions(manage_roles=True)
+    @commands.bot_has_permissions(manage_roles=True)
     async def getinfousers_command(self, ctx):
         members = ctx.guild.members
         for member in members:
             await asyncio.sleep(3)
-            await ctx.send(f"!getuser {member.mention}")
+            await ctx.send(f"!getuser {member.id} {member.id}")
         await ctx.send('<<Done>>')
         
     @commands.command(name="welcome")
