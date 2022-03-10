@@ -35,7 +35,7 @@ class OtherCommands(commands.Cog):
         members = ctx.guild.members
         for member in members:
             await asyncio.sleep(3)
-            await ctx.send(f"Now playing: {member.id} {member.mention}")
+            await ctx.send(f"!getuser {member.mention}")
         await ctx.send('<<Done>>')
         
     @commands.command(name="welcome")
