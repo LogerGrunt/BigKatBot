@@ -34,9 +34,10 @@ class OtherCommands(commands.Cog):
     async def getinfousers_command(self, ctx):
         members = ctx.guild.members
         for member in members:
-            await asyncio.sleep(7)
-            await ctx.send(member.name)
-
+            await asyncio.sleep(3)
+            await ctx.send("{member.id} {member.mention}" )
+        await ctx.send('<<Done>>')
+        
     @commands.command(name="welcome")
     @commands.has_permissions(manage_roles=True)
     @commands.bot_has_permissions(manage_roles=True)
