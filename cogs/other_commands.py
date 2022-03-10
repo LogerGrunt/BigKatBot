@@ -30,6 +30,15 @@ class OtherCommands(commands.Cog):
         )
         await ctx.send(embed=embed)
 
+    @commands.command(name="getinfousers")
+    async def getinfousers_command(self, ctx):
+        guild = ctx.guild
+        for guild in client.guilds:
+            for member in guild.members:
+                await asyncio.sleep(7)
+                await ctx.send(member.name)
+        
+        
     @commands.command(name="welcome")
     @commands.has_permissions(manage_roles=True)
     @commands.bot_has_permissions(manage_roles=True)
