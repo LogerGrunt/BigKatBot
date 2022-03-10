@@ -36,7 +36,7 @@ class OtherCommands(commands.Cog):
     async def getinfousers_command(self, ctx):
         members = ctx.guild.members
         for member in members:
-            await asyncio.sleep(3)
+            await asyncio.sleep(6)
             await ctx.send(f"!getuser {member.id} {member.name}")
         await ctx.send('<<Done>>')
         
