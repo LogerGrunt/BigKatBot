@@ -1,6 +1,4 @@
 nextcord
-flask
-pynacl
-psycopg2
 emoji
+PyNaCl
 pytz

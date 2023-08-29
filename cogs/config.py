@@ -1,10 +1,10 @@
 import nextcord
 from nextcord.ext import commands
-from nextcord.ext.commands import has_permissions, MissingPermissions
+from nextcord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
 import dbwrapper
-import traceback
-import sys
+import logging
 
+log = logging.getLogger('root')
 
 class ConfigureChannels(commands.Cog):
     def __init__(self, bot):
@@ -25,342 +25,58 @@ class ConfigureChannels(commands.Cog):
         Includes a permission check so that only users with the
         "manage_channels" permission can use this command.
 
-        All messages and commands are cleared after 30 seconds to keep
+        All messages and commands are cleared after 10 seconds to keep
         channels clear of unnecessary commands and notification messages
         """
         channel = channel.replace("[", "").replace("]", "")  # if ID is wrapped in []
+        channel = channel.replace("<#", "").replace(">", "")  # if <#channelid> remove <# and >
         channel = self.bot.get_channel(int(channel))
         if channel is None:
-            await ctx.send("There is no channel with that ID.", delete_after=30)
+            await ctx.send("There is no channel with that ID.", delete_after=10)
         else:
             channel_id = str(channel.id)
             channel_name = f"<#{channel_id}>"
 
-            dbobj = dbwrapper.DiscordDB()
-            dbobj.Connect()
-            db_result = str(dbobj.getDB("announce_channel"))
+            #log.warning(f"Debug1: [%s] {ctx.message.guild.id}")
+            #log.warning(f"Debug2: [%s] {ctx.guild.id}")
+            #ctx.message.guild.id
+            #ctx.guild.id
+            #guild = discord.utils.get(bot.guilds, id=378473289473829)
+            #guild = await client.get_guild(id)
+            # for guild in bot.guilds:
+            #     print(guild.id)
 
-            if db_result == channel_id:
-                await ctx.send(
-                    f"{channel_name} is already your set Announcements channel.",
-                    delete_after=30,
-                )
+            dbwrapper.DiscordDB().SetChannel(ctx.message.guild.id, "announce_channel", channel_id)
 
-            else:
-                dbobj.setDB("announce_channel", channel_id)
-
-                await ctx.send(
-                    f"Announcements channel has been updated to:  {channel_name} (ID: {channel_id})",
-                    delete_after=30,
-                )
-            await ctx.message.delete(delay=30)
-
-            dbobj.Close()
+            await ctx.send(
+                f"Announcements channel has been updated to:  {channel_name} (ID: {channel_id})",
+                delete_after=10,
+            )
+            await ctx.message.delete(delay=10)
 
     @announce_config.error
     async def announce_config_error(self, ctx, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
-        Command and error message are auto-deleted after 30 seconds to keep
+        Command and error message are auto-deleted after 10 seconds to keep
         channels clear of unnecessary error messages.
         """
 
         if isinstance(error, MissingPermissions):
             await ctx.send(
                 "Sorry. You do not have permission to use that command.",
-                delete_after=30,
+                delete_after=10,
             )
-            await ctx.message.delete(delay=30)
-        else:
-            # All other Errors not returned come here. And we can just print the default TraceBack.
-            print(
-                "Ignoring exception in command {}:".format(ctx.invoked_with),
-                file=sys.stderr,
-            )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
-            )
-
-    """
-    Configure command for updating member join announcement channel
-    """
-
-    @commands.command(name="set-join")
-    @commands.has_permissions(manage_channels=True)
-    async def join_config(self, ctx, channel):
-        """
-        Takes a channel ID as an arguement (906217502554599425)
-        example:  !set  906217502554599425
-
-        Includes a permission check so that only users with the
-        "manage_channels" permission can use this command.
-
-        All messages and commands are cleared after 30 seconds to keep
-        channels clear of unnecessary commands and notification messages
-        """
-        channel = channel.replace("[", "").replace("]", "")  # if ID is wrapped in []
-        channel = self.bot.get_channel(int(channel))
-        if channel is None:
-            await ctx.send("There is no channel with that ID.", delete_after=30)
-        else:
-            channel_id = str(channel.id)
-            channel_name = f"<#{channel_id}>"
-
-            dbobj = dbwrapper.DiscordDB()
-            dbobj.Connect()
-            db_result = str(dbobj.getDB("member_join_channel"))
-
-            if db_result == channel_id:
-                await ctx.send(
-                    f"{channel_name} is already your set Member Join alerts channel.",
-                    delete_after=30,
-                )
-            else:
-                dbobj.setDB("member_join_channel", channel_id)
-
-                await ctx.send(
-                    f"Member join alerts channel has been updated to:  {channel_name} (ID: {channel_id})",
-                    delete_after=30,
-                )
-            await ctx.message.delete(delay=30)
-
-            dbobj.Close()
-
-    @join_config.error
-    async def join_config_error(self, ctx, error):
-        """
-        Error check, if command user is missing permission, error message
-        sent to command channel.
-        Command and error message are auto-deleted after 30 seconds to keep
-        channels clear of unnecessary error messages.
-        """
-        if isinstance(error, MissingPermissions):
+            await ctx.message.delete(delay=10)
+        elif isinstance(error, MissingRequiredArgument):
             await ctx.send(
-                "Sorry. You do not have permission to use that command.",
-                delete_after=30,
+                "Sorry. You must provide a \#channellink",
+                delete_after=10,
             )
-            await ctx.message.delete(delay=30)
+            await ctx.message.delete(delay=10)
         else:
-            # All other Errors not returned come here. And we can just print the default TraceBack.
-            print(
-                "Ignoring exception in command {}:".format(ctx.invoked_with),
-                file=sys.stderr,
-            )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
-            )
-
-    """
-    Command for updating member leave announcement channel
-    """
-
-    @commands.command(name="set-leave")
-    @commands.has_permissions(manage_channels=True)
-    async def leave_config(self, ctx, channel):
-        """
-        Takes a channel ID as an arguement (906217502554599425)
-        example:  !set  906217502554599425
-
-        Includes a permission check so that only users with the
-        "manage_channels" permission can use this command.
-
-        All messages and commands are cleared after 30 seconds to keep
-        channels clear of unnecessary commands and notification messages
-        """
-        channel = channel.replace("[", "").replace("]", "")  # if ID is wrapped in []
-        channel = self.bot.get_channel(int(channel))
-        if channel is None:
-            await ctx.send("There is no channel with that ID.", delete_after=30)
-        else:
-            channel_id = str(channel.id)
-            channel_name = f"<#{channel_id}>"
-
-            dbobj = dbwrapper.DiscordDB()
-            dbobj.Connect()
-            db_result = str(dbobj.getDB("member_leave_channel"))
-
-            if db_result == channel_id:
-                await ctx.send(
-                    f"{channel_name} is already your set Member leave alerts channel.",
-                    delete_after=30,
-                )
-            else:
-                dbobj.setDB("member_leave_channel", channel_id)
-
-                await ctx.send(
-                    f"Member leave alerts channel has been updated to:  {channel_name} (ID: {channel_id})",
-                    delete_after=30,
-                )
-            await ctx.message.delete(delay=30)
-
-            dbobj.Close()
-
-    @leave_config.error
-    async def leave_config_error(self, ctx, error):
-        """
-        Error check, if command user is missing permission, error message
-        sent to command channel.
-        Command and error message are auto-deleted after 30 seconds to keep
-        channels clear of unnecessary error messages.
-        """
-
-        if isinstance(error, MissingPermissions):
-            await ctx.send(
-                "Sorry. You do not have permission to use that command.",
-                delete_after=30,
-            )
-            await ctx.message.delete(delay=30)
-        else:
-            # All other Errors not returned come here. And we can just print the default TraceBack.
-            print(
-                "Ignoring exception in command {}:".format(ctx.invoked_with),
-                file=sys.stderr,
-            )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
-            )
-
-    """
-    Command for updating bot channel
-    """
-
-    @commands.command(name="set-bot")
-    @commands.has_permissions(manage_channels=True)
-    async def botchannel_config(self, ctx, channel):
-        """
-        Takes a channel ID as an arguement (906217502554599425)
-        example:  !set  906217502554599425
-
-        Includes a permission check so that only users with the
-        "manage_channels" permission can use this command.
-
-        All messages and commands are cleared after 30 seconds to keep
-        channels clear of unnecessary commands and notification messages
-        """
-        channel = channel.replace("[", "").replace("]", "")  # if ID is wrapped in []
-        channel = self.bot.get_channel(int(channel))
-        if channel is None:
-            await ctx.send("There is no channel with that ID.", delete_after=30)
-        else:
-            channel_id = str(channel.id)
-            channel_name = f"<#{channel_id}>"
-
-            dbobj = dbwrapper.DiscordDB()
-            dbobj.Connect()
-            db_result = str(dbobj.getDB("bot_channel"))
-
-            if db_result == channel_id:
-                await ctx.send(
-                    f"{channel_name} is already your bot channel.",
-                    delete_after=30,
-                )
-            else:
-                dbobj.setDB("bot_channel", channel_id)
-
-                await ctx.send(
-                    f"Bot channel has been updated to:  {channel_name} (ID: {channel_id})",
-                    delete_after=30,
-                )
-        await ctx.message.delete(delay=30)
-
-        dbobj.Close()
-
-    @leave_config.error
-    async def botchannel_config_error(self, ctx, error):
-        """
-        Error check, if command user is missing permission, error message
-        sent to command channel.
-        Command and error message are auto-deleted after 30 seconds to keep
-        channels clear of unnecessary error messages.
-        """
-
-        if isinstance(error, MissingPermissions):
-            await ctx.send(
-                "Sorry. You do not have permission to use that command.",
-                delete_after=30,
-            )
-            await ctx.message.delete(delay=30)
-        else:
-            # All other Errors not returned come here. And we can just print the default TraceBack.
-            print(
-                "Ignoring exception in command {}:".format(ctx.invoked_with),
-                file=sys.stderr,
-            )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
-            )
-
-    """
-    Command for updating reaction role channel
-    """
-
-    @commands.command(name="set-reactionrole")
-    @commands.has_permissions(manage_channels=True)
-    async def reactionrolechannel_config(self, ctx, channel):
-        """
-        Takes a channel ID as an arguement (906217502554599425)
-        example:  !set  906217502554599425
-
-        Includes a permission check so that only users with the
-        "manage_channels" permission can use this command.
-
-        All messages and commands are cleared after 30 seconds to keep
-        channels clear of unnecessary commands and notification messages
-        """
-        channel = channel.replace("[", "").replace("]", "")  # if ID is wrapped in []
-        channel = self.bot.get_channel(int(channel))
-        if channel is None:
-            await ctx.send("There is no channel with that ID.", delete_after=30)
-        else:
-            channel_id = str(channel.id)
-            channel_name = f"<#{channel_id}>"
-
-            dbobj = dbwrapper.DiscordDB()
-            dbobj.Connect()
-            db_result = str(dbobj.getDB("reactionrole_channel"))
-
-            if db_result == channel_id:
-                await ctx.send(
-                    f"{channel_name} is already your reaction role channel.",
-                    delete_after=30,
-                )
-            else:
-                dbobj.setDB("reactionrole_channel", channel_id)
-
-                await ctx.send(
-                    f"Reaction role channel has been updated to:  {channel_name} (ID: {channel_id})",
-                    delete_after=30,
-                )
-            await ctx.message.delete(delay=30)
-
-            dbobj.Close()
-
-    @leave_config.error
-    async def reactionrolechannel_config_error(self, ctx, error):
-        """
-        Error check, if command user is missing permission, error message
-        sent to command channel.
-        Command and error message are auto-deleted after 30 seconds to keep
-        channels clear of unnecessary error messages.
-        """
-
-        if isinstance(error, MissingPermissions):
-            await ctx.send(
-                "Sorry. You do not have permission to use that command.",
-                delete_after=30,
-            )
-            await ctx.message.delete(delay=30)
-        else:
-            # All other Errors not returned come here. And we can just print the default TraceBack.
-            print(
-                "Ignoring exception in command {}:".format(ctx.invoked_with),
-                file=sys.stderr,
-            )
-            traceback.print_exception(
-                type(error), error, error.__traceback__, file=sys.stderr
-            )
-
+            log.error(f"[%s] {error}", __class__.__name__)
 
 def setup(bot):
     bot.add_cog(ConfigureChannels(bot))

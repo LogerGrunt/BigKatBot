@@ -1,16 +1,21 @@
 import os
 import nextcord
-import logging
 from nextcord.ext import commands
-import keep_alive
-import traceback
-import sys
+import bot_token
+import logging
+from logging.handlers import RotatingFileHandler
+import dbwrapper
 
-"""
-Basic logging config
-"""
-logging.basicConfig(format="%(message)s", level="WARNING")
-log = logging.getLogger("root")
+log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
+
+log_handler = RotatingFileHandler('logs/bot_logs.log', mode='a', maxBytes=5*1024*1024*20, backupCount=2, encoding=None, delay=0) #100MB
+log_handler.setFormatter(log_formatter)
+log_handler.setLevel(logging.WARNING)
+
+log = logging.getLogger('root')
+log.setLevel(logging.WARNING)
+log.addHandler(log_handler) #print to file
+log.addHandler(logging.StreamHandler()) #print to console
 
 """
 Define bot, command prefix, disable native help command, and make commands
@@ -28,8 +33,12 @@ bot = commands.Bot(
 Load cog extensions for bot
 """
 for filename in os.listdir("./cogs"):
-    if filename.endswith(".py"):
-        bot.load_extension(f"cogs.{filename[:0-3]}")
+   if filename.endswith(".py"):
+       bot.load_extension(f"cogs.{filename[:0-3]}")
+
+
+#if you get a build error uninstall distro_info
+#sudo apt remove python3-distro-info
 
 
 @bot.event
@@ -37,11 +46,8 @@ async def on_ready():
     """
     Simple, on-ready event that logs to console when bot is connected and ready
     """
-    log.warning(f"{bot.user.name} is connected and ready!")
-
+    dbwrapper.DiscordDB().CheckTables()
+    log.warning(f"[%s] {bot.user.name} is connected and ready!", "MAIN")
 
 if __name__ == "__main__":
-    # Setup Flask webserver for 24/7 uptime with Uptimerobot pinging every 20 minutes
-    keep_alive.keep_alive()
-    my_secret = os.environ.get("TOKEN", None)
-    bot.run(my_secret)
+    bot.run(bot_token.TOKEN)
