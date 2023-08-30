@@ -2,3 +2,4 @@ nextcord
 emoji
 PyNaCl
 pytz
+validators

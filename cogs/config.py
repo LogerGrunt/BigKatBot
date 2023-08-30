@@ -46,7 +46,8 @@ class ConfigureChannels(commands.Cog):
             # for guild in bot.guilds:
             #     print(guild.id)
 
-            dbwrapper.DiscordDB().SetChannel(ctx.message.guild.id, "announce_channel", channel_id)
+            with dbwrapper.DiscordDB() as dbobj:
+                dbobj.SetChannel(ctx.message.guild.id, "announce_channel", channel_id)
 
             await ctx.send(
                 f"Announcements channel has been updated to:  {channel_name} (ID: {channel_id})",

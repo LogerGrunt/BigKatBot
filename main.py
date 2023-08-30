@@ -46,8 +46,11 @@ async def on_ready():
     """
     Simple, on-ready event that logs to console when bot is connected and ready
     """
-    dbwrapper.DiscordDB().CheckTables()
+    with dbwrapper.DiscordDB() as dbobj:
+        dbobj.CheckTables()
+
     log.warning(f"[%s] {bot.user.name} is connected and ready!", "MAIN")
+
 
 if __name__ == "__main__":
     bot.run(bot_token.TOKEN)

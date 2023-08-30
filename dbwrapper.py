@@ -4,10 +4,35 @@ import logging
 
 log = logging.getLogger('root')
 
-class DiscordDB:
+#https://stackoverflow.com/questions/37648667/python-how-to-initiate-and-close-a-mysql-connection-inside-a-class
+
+class DiscordDB(object):
     def __init__(self):
+        self.dbfile = 'bot_database.db'
         self.con = None
         self.cur = None
+
+    def __enter__(self):
+        # This ensure, whenever an object is created using "with"
+        # this magic method is called, where you can create the connection.
+        try:
+            self.con = sqlite3.connect('bot_database.db') # file path
+            self.cur = self.con.cursor()
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+        return self
+    
+    def __exit__(self, exception_type, exception_val, trace):
+        # once the with block is over, the __exit__ method would be called
+        # with that, you close the connnection
+        try:
+           self.cur.close()
+           self.con.close()
+        except AttributeError: # isn't closable
+           return True # exception handled successfully
 
     def is_integer(self, n):
         try:
@@ -16,26 +41,13 @@ class DiscordDB:
             return False
         else:
             return float(n).is_integer()
-        
-    def Connect(self):
-        try:
-            self.con = sqlite3.connect('bot_database.db') # file path
-        except Error as e:
-            log.error(f"[%s] {e}", __class__.__name__)
-        except Exception as e:
-            log.error(f"[%s] {e}", __class__.__name__)
-
-        self.cur = self.con.cursor()
-        return self.con
 
     def CheckTables(self):
         try:
-            self.Connect()
             self.cur.executescript(""" 
                 CREATE TABLE IF NOT EXISTS CHANNELS(guild_id BIGINT, keyname VARCHAR(255), value VARCHAR(255));
                 CREATE TABLE IF NOT EXISTS MOVIENIGHT(id INTEGER PRIMARY KEY AUTOINCREMENT, guild_id BIGINT, link TEXT, watched BOOLEAN DEFAULT FALSE, fame BOOLEAN  DEFAULT FALSE);
             """)
-            self.Close()
         except Error as e:
             log.error(f"[%s] {e}", __class__.__name__)
         except Exception as e:
@@ -43,7 +55,6 @@ class DiscordDB:
     
     def SetChannel(self, guild_id, keyname, value):
         try:
-            self.Connect()
             self.cur.execute(
                 "DELETE FROM CHANNELS WHERE guild_id = ? AND keyname = ?;", (guild_id, keyname,)
             )
@@ -51,7 +62,6 @@ class DiscordDB:
                 "INSERT INTO CHANNELS (guild_id, keyname, value) VALUES (?, ?, ?);", (guild_id, keyname, value,)
             )
             self.con.commit()
-            self.con.close()
 
         except Error as e:
             log.error(f"[%s] {e}", __class__.__name__)
@@ -60,12 +70,10 @@ class DiscordDB:
 
     def GetChannel(self, guild_id, keyname):
         try:
-            self.Connect()
             self.cur.execute(
                 "SELECT value FROM CHANNELS WHERE guild_id = ? AND keyname = ?;", (guild_id, keyname,)
             )
             result = self.cur.fetchone()
-            self.con.close()
 
             if result is not None:
                 return result[0]
@@ -78,7 +86,6 @@ class DiscordDB:
 
     def MovieNight_Add(self, guild_id, value):
         try:
-            self.Connect()
             self.cur.execute(
                 "INSERT INTO MOVIENIGHT (guild_id, link) VALUES (?, ?);", (guild_id, value,)
             )
@@ -87,7 +94,6 @@ class DiscordDB:
                 "SELECT last_insert_rowid() FROM MOVIENIGHT;"
             )
             result = self.cur.fetchone()
-            self.con.close()
 
             if result is not None:
                 return result[0]
@@ -101,7 +107,6 @@ class DiscordDB:
 
     def MovieNight_Get(self, guild_id, value):
         try:
-            self.Connect()
             if self.is_integer(value) is True:
                 self.cur.execute(
                     "SELECT * FROM MOVIENIGHT WHERE guild_id = ? AND id = ?;", (guild_id, value,)
@@ -112,7 +117,6 @@ class DiscordDB:
                 )
 
             result = self.cur.fetchone()
-            self.con.close()
 
             if result is not None:
                 return result
@@ -126,50 +130,39 @@ class DiscordDB:
 
     def MovieNight_Remove(self, guild_id, value):
         try:
-            self.Connect()
             self.cur.execute(
                 "DELETE FROM MOVIENIGHT WHERE guild_id = ? AND id = ?;", (guild_id, value,)
             )
             self.con.commit()
-            self.con.close()
 
         except Error as e:
             log.error(f"[%s] {e}", __class__.__name__)
         except Exception as e:
             log.error(f"[%s] {e}", __class__.__name__)
 
+    def MovieNight_Random(self, guild_id):
+        try:
+            self.cur.execute(
+                "SELECT * FROM MOVIENIGHT WHERE guild_id = ? AND watched = FALSE ORDER BY RANDOM() LIMIT 1;", (guild_id,)
+            )
+            result = self.cur.fetchone()
+
+            if result is not None:
+                return result
+            else:
+                return None
+            
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
 
     def Commit(self):
         self.con.commit()
 
     def Close(self):
-        self.con.close()
-
-
-# # check if table exists
-# print('Check if STUDENT table exists in the database:')
-# listOfTables = cur.execute(
-#   """SELECT tableName FROM sqlite_master WHERE type='table'
-#   AND tableName='STUDENT'; """).fetchall()
- 
-# if listOfTables == []:
-#     print('Table not found!')
-# else:
-#     print('Table found!')
- 
-# # check if table exists
-# print('Check if TEACHER table exists in the database:')
-# listOfTables = cur.execute(
-#   """SELECT name FROM sqlite_master WHERE type='table'
-#   AND name='TEACHER'; """).fetchall()
- 
-# if listOfTables == []:
-#     print('Table not found!')
-# else:
-#     print('Table found!')
- 
-# # commit changes
-# con.commit()
- 
-# # terminate the connection
-# con.close()
+        try:
+           self.cur.close()
+           self.con.close()
+        except AttributeError: # isn't closable
+           return True # exception handled successfully
