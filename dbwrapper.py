@@ -157,6 +157,61 @@ class DiscordDB(object):
         except Exception as e:
             log.error(f"[%s] {e}", __class__.__name__)
 
+    def MovieNight_Watched(self, guild_id, value, switch):
+        try:
+            self.cur.execute(
+                "UPDATE MOVIENIGHT SET watched = ? WHERE guild_id = ? AND id = ?;", (switch, guild_id, value,)
+            )
+            self.con.commit()
+
+            #check for changes
+            if self.cur.rowcount < 1:
+                return False
+            else:
+                return True
+
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def MovieNight_Fame(self, guild_id, value, switch):
+        try:
+            self.cur.execute(
+                "UPDATE MOVIENIGHT SET fame = ? WHERE guild_id = ? AND id = ?;", (switch, guild_id, value,)
+            )
+            self.con.commit()
+
+            #check for changes
+            if self.cur.rowcount < 1:
+                return False
+            else:
+                return True
+
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def MovieNight_Find(self, guild_id, value):
+        try:
+            #SUBMOVIELIST is the alias name for the subquery
+            numrows = self.cur.execute(
+                "SELECT * FROM (SELECT * FROM MOVIENIGHT WHERE guild_id = ?) SUBMOVIELIST WHERE link LIKE ? LIMIT 10;", (guild_id, '%'+value+'%',)
+            )
+            result = self.cur.fetchall()
+
+            #len of results will return the amount of rows
+            if result is not None and len(result) > 0:
+                return result
+            else:
+                return None
+            
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
     def Commit(self):
         self.con.commit()
 
@@ -166,3 +221,5 @@ class DiscordDB(object):
            self.con.close()
         except AttributeError: # isn't closable
            return True # exception handled successfully
+
+

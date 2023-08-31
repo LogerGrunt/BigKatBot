@@ -10,55 +10,54 @@ class HelpCommand(commands.Cog):
 
         embed = nextcord.Embed(
             title=f"About {self.bot.user.name}",
-            description=f"""**General Features**:
-            **Member Leave Alerts**
-            Custom message is posted to the configured channel when a member has left or been kicked from the server.
-
-            **Admin Features**:
-            **Emoji Pin**
-            React to a message with :pushpin: emoji and the bot will pin that message to the channel.
-
-            **Emoji Announce**
-            React to a message with :mega: emoji and the bot will announce that message to the configured announcement channel.
+            description=f"""**:calendar:  Event Tracking:**
+            Event tracking stuff.
 
             """,
         )
         embed.add_field(
-            name="General Commands",
+            name=":cinema:  Movie Night Commands",
             value=f"""
-                        `{ctx.prefix}spank @member`
-                        Spanks a member with a bot displayed message.
-                        """,
-            inline=False,
-        )
-
-        embed.add_field(
-            name="Admin Commands",
-            value=f"""
-                        `{ctx.prefix}welcome @member`
-                        Removes Visitors Role and grants Member Role. Displays a welcome message.
-
-                        `{ctx.prefix}event msg`
-                        Creates an event message by the bot with a reaction checkmark.
+                        `{ctx.prefix}movie-add link/url`
+                        Adds a movie to the database.
                         
-                        `{ctx.prefix}set-announce [channelID]`
-                        Set the general announcements channel by ID
+                        `{ctx.prefix}movie-remove MovieID or link/url`
+                        :warning:Admin Only: Removes a movie from the database.
+                        
+                        `{ctx.prefix}movie-random`
+                        Randomly selects a movie from the database.
 
-                        `{ctx.prefix}set-bot [channelID]`
-                        Set the general bot channel by ID
+                        `{ctx.prefix}movie-watched MovieID or link/url`
+                        :warning:Admin Only: Sets a movie as watched in the database and prevents it from being selected with movie-random.
 
-                        `{ctx.prefix}set-reactionrole [channelID]`
-                        Set the general reaction role channel by ID
-                                              
-                        `{ctx.prefix}set-join [channelID]`
-                        Set member join announcemnets by ID
-
-                        `{ctx.prefix}set-leave [channelID]`
-                         Set member leave announcements by ID
                         """,
             inline=False,
         )
+        #embd values have a max of 1024 characters, so you have to add new ones using the bold tag to get rid of the name variable
+        embed.add_field(
+            name="** **",
+            value=f"""
+                        `{ctx.prefix}movie-fame MovieID or link/url`
+                        :warning:Admin Only: Toggles the fame status true/false of a movie in the database.
+                                              
+                        `{ctx.prefix}movie-info MovieID or link/url`
+                        Returns information on a movie from the database.
 
+                        `{ctx.prefix}movie-find searchtext`
+                        Returns all movies in the database that match the search criteria provided.
+
+                        """,
+            inline=False,
+        )
+        embed.add_field(
+            name=":hammer:  Admin Commands",
+            value=f"""
+                        `{ctx.prefix}set-announce channelid or channelmention`
+                        Sets the announcement channel for the event tracking notifications.
+
+                        """,
+            inline=False,
+        )
         await ctx.send(embed=embed)
 
 
