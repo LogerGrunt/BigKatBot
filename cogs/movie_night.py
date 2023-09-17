@@ -72,14 +72,28 @@ class MovieNight(commands.Cog):
 
                     embed = nextcord.Embed(
                         title=f":white_check_mark::white_check_mark::white_check_mark: **MOVIE ADDED**",
-                        description=f"""
-                            **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                    
-                            **MovieID**: {movieID}
-                            **Title**: {movietitle}
-                            **Movie**: <{movielink}>
-                        """,
+                        description="** **",                        
                     )
+                    embed.add_field(
+                        name="User",
+                        value=f"{ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="MovieID",
+                        value=f"{movieID}",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="Title",
+                        value=f"{movietitle}",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="Movie",
+                        value=f"<{movielink}>",
+                        inline=False,
+                    )        
                     await ctx.send(embed=embed)
                     await ctx.message.delete(delay=3)
 
@@ -121,14 +135,29 @@ class MovieNight(commands.Cog):
 
                     embed = nextcord.Embed(
                         title=f":x::x::x: **MOVIE REMOVED**",
-                        description=f"""
-                            **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                            
-                            **MovieID**:  {result[0]}
-                            **Title**: {result[2]}
-                            **Movie**: <{result[3]}>
-                        """,
+                        description="** **",                 
                     )
+                    embed.add_field(
+                        name="User",
+                        value=f"{ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="MovieID",
+                        value=f"{result[0]}",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="Title",
+                        value=f"{result[2]}",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="Movie",
+                        value=f"<{result[3]}>",
+                        inline=False,
+                    )  
+
                     await ctx.send(embed=embed)
                     await ctx.message.delete(delay=3)
                 else:
@@ -222,17 +251,35 @@ class MovieNight(commands.Cog):
                         boolChk = self.bool_string(switch)
 
                         embed = nextcord.Embed(
-                            title=f":eyes::eyes::eyes: **MOVIE WATCHED**",
-                            description=f"""
-                                **WATCHED:**  {boolChk}
-
-                                **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                                
-                                **MovieID**:  {result[0]}
-                                **Title**: {result[2]}
-                                **Movie**: <{result[3]}>
-                            """,
+                            title=f":clapper::clapper::clapper: **MOVIE WATCHED**",
+                            description="** **",                 
                         )
+                        embed.add_field(
+                            name=f"Watched:  {boolChk}",
+                            value="** **",
+                            inline=False,
+                        )                        
+                        embed.add_field(
+                            name="User",
+                            value=f"{ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>",
+                            inline=False,
+                        )
+                        embed.add_field(
+                            name="MovieID",
+                            value=f"{result[0]}",
+                            inline=False,
+                        )
+                        embed.add_field(
+                            name="Title",
+                            value=f"{result[2]}",
+                            inline=False,
+                        )
+                        embed.add_field(
+                            name="Movie",
+                            value=f"<{result[3]}>",
+                            inline=False,
+                        )  
+
                         await ctx.send(embed=embed)
                         await ctx.message.delete(delay=3)
 
@@ -291,16 +338,34 @@ class MovieNight(commands.Cog):
 
                         embed = nextcord.Embed(
                             title=f":trophy::trophy::trophy: **MOVIE FAME**",
-                            description=f"""
-                                **FAME:**  {boolChk}
-
-                                **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                                
-                                **MovieID**:  {result[0]}
-                                **Title**: {result[2]}
-                                **Movie**: <{result[3]}>
-                            """,
+                            description="** **",                 
                         )
+                        embed.add_field(
+                            name=f"Fame:  {boolChk}",
+                            value="** **",
+                            inline=False,
+                        )                        
+                        embed.add_field(
+                            name="User",
+                            value=f"{ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>",
+                            inline=False,
+                        )
+                        embed.add_field(
+                            name="MovieID",
+                            value=f"{result[0]}",
+                            inline=False,
+                        )
+                        embed.add_field(
+                            name="Title",
+                            value=f"{result[2]}",
+                            inline=False,
+                        )
+                        embed.add_field(
+                            name="Movie",
+                            value=f"<{result[3]}>",
+                            inline=False,
+                        ) 
+
                         await ctx.send(embed=embed)
                         await ctx.message.delete(delay=3)
 
@@ -349,15 +414,39 @@ class MovieNight(commands.Cog):
 
                     embed = nextcord.Embed(
                         title=f":question::question::question: **MOVIE INFO**",
-                        description=f"""
-                            :eyes:  **WATCHED:**  {watched}
-                            :trophy:  **FAME:**  {fame}
-
-                            **MovieID**:  {result[0]}
-                            **Title**: {result[2]}
-                            **Movie**: <{result[3]}>
-                        """,
+                        description="** **",                 
                     )
+                    embed.add_field(
+                        name=f":clapper:  Watched:  {watched}",
+                        value="** **",
+                        inline=True,
+                    )
+                    embed.add_field(
+                        name=f":trophy:  Fame:  {fame}",
+                        value="** **",
+                        inline=True,
+                    )                       
+                    embed.add_field(
+                        name="User",
+                        value=f"{ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="MovieID",
+                        value=f"{result[0]}",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="Title",
+                        value=f"{result[2]}",
+                        inline=False,
+                    )
+                    embed.add_field(
+                        name="Movie",
+                        value=f"<{result[3]}>",
+                        inline=False,
+                    ) 
+
                     await ctx.send(embed=embed)
                     await ctx.message.delete(delay=3)
                     
@@ -401,7 +490,7 @@ class MovieNight(commands.Cog):
                     
                     response = ":mag::mag::mag:  **MOVIE FIND**\n\n"
                     for row in result:
-                        response=response+f"**MovieID**:  {row[0]}  |  **WATCHED:**  {self.bool_string(row[4])}  |  **FAME:**  {self.bool_string(row[5])}  |  **Title**:  {row[2]}  |  **Movie**:  <{row[3]}>\n\n"
+                        response=response+textwrap.dedent(f"**MovieID**:  {row[0]}  |  **WATCHED:**  {self.bool_string(row[4])}  |  **FAME:**  {self.bool_string(row[5])}  |  **Title**:  {row[2]}  |  **Movie**:  <{row[3]}>\n\n")
 
                     await ctx.send(response)
                 else:
