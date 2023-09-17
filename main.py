@@ -60,6 +60,9 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         command = ctx.invoked_with
         await ctx.send(f"The command [`{command}`] you have executed is not found.  Please use `{ctx.prefix}help`")
+    if isinstance(error, commands.MissingPermissions):
+        command = ctx.invoked_with
+        await ctx.send(f"You don't have permission for that command.")
 
 if __name__ == "__main__":
     bot.run(bot_token.TOKEN)

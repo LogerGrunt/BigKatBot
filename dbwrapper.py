@@ -45,8 +45,8 @@ class DiscordDB(object):
     def CheckTables(self):
         try:
             self.cur.executescript(""" 
-                CREATE TABLE IF NOT EXISTS CHANNELS(guild_id BIGINT, keyname VARCHAR(255), value VARCHAR(255));
-                CREATE TABLE IF NOT EXISTS MOVIENIGHT(id INTEGER PRIMARY KEY AUTOINCREMENT, guild_id BIGINT, link TEXT, watched BOOLEAN DEFAULT FALSE, fame BOOLEAN  DEFAULT FALSE);
+                CREATE TABLE IF NOT EXISTS CHANNELS(guild_id BIGINT, keyname TEXT, value TEXT);
+                CREATE TABLE IF NOT EXISTS MOVIENIGHT(id INTEGER PRIMARY KEY AUTOINCREMENT, guild_id BIGINT, title TEXT, link TEXT, watched BOOLEAN DEFAULT FALSE, fame BOOLEAN  DEFAULT FALSE);
             """)
         except Error as e:
             log.error(f"[%s] {e}", __class__.__name__)
@@ -84,10 +84,10 @@ class DiscordDB(object):
         except Exception as e:
             log.error(f"[%s] {e}", __class__.__name__)
 
-    def MovieNight_Add(self, guild_id, value):
+    def MovieNight_Add(self, guild_id, title, link):
         try:
             self.cur.execute(
-                "INSERT INTO MOVIENIGHT (guild_id, link) VALUES (?, ?);", (guild_id, value,)
+                "INSERT INTO MOVIENIGHT (guild_id, title, link) VALUES (?, ?, ?);", (guild_id, title, link,)
             )
             self.con.commit()
             self.cur.execute(
@@ -197,7 +197,7 @@ class DiscordDB(object):
         try:
             #SUBMOVIELIST is the alias name for the subquery
             numrows = self.cur.execute(
-                "SELECT * FROM (SELECT * FROM MOVIENIGHT WHERE guild_id = ?) SUBMOVIELIST WHERE link LIKE ? LIMIT 10;", (guild_id, '%'+value+'%',)
+                "SELECT * FROM (SELECT * FROM MOVIENIGHT WHERE guild_id = ?1) SUBMOVIELIST WHERE title LIKE ?2 OR link LIKE ?2 COLLATE NOCASE LIMIT 10;", (guild_id, '%'+value+'%',)
             )
             result = self.cur.fetchall()
 

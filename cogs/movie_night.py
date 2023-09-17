@@ -5,6 +5,8 @@ import dbwrapper
 import logging
 import textwrap
 import validators
+import requests
+from bs4 import BeautifulSoup
 
 log = logging.getLogger('root')
 
@@ -21,25 +23,38 @@ class MovieNight(commands.Cog):
             return float(n).is_integer()
 
     def bool_string(self, n):
-        boolChk = ':no_entry_sign: FALSE'
+        boolChk = ':x:'
         if n == 1:
-            boolChk = ':white_check_mark: TRUE'
+            boolChk = ':white_check_mark:'
 
         return boolChk
 
     @commands.command(name="movie-add")
-    async def movie_add(self, ctx, movielink):
+    async def movie_add(self, ctx, movietitle, movielink=None):
         
         """
         Takes a link
+        example:  !movie-add "movie title" https://www.youtube.com/watch?v=YhTMFDlI1l8&list=PL6dpcY8ijWKKhQ2cEuhfRU8w4eWfjdRbi&index=14
         example:  !movie-add https://www.youtube.com/watch?v=YhTMFDlI1l8&list=PL6dpcY8ijWKKhQ2cEuhfRU8w4eWfjdRbi&index=14
+
+        movielink=None allows the second parameter to be optional
 
         All messages and commands are cleared after 10 seconds to keep
         channels clear of unnecessary commands and notification messages
         """
 
-        if movielink is None:
-            await ctx.send("You must provide a link.", delete_after=10)
+        """ Check the first parameter, it can be a title or a link.  If it's a link then lets grab the webpage title."""
+        if validators.url(movietitle) is True and movielink is None:
+            response = requests.get(movietitle)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            title = soup.title.string
+
+            if title is not None:
+                movielink = movietitle
+                movietitle = title
+
+        if movietitle is None or movielink is None:
+            await ctx.send("""Invalid Syntax: `bk!movie-add link` or `bk!movie-add "movie title" link`""", delete_after=10)
         elif self.is_integer(movielink) is True:
             await ctx.send("You must provide a link not an integer.", delete_after=10)
         elif validators.url(movielink) is False:
@@ -53,25 +68,28 @@ class MovieNight(commands.Cog):
                     )
                     await ctx.message.delete(delay=3)
                 else:
-                    movieID=dbobj.MovieNight_Add(ctx.message.guild.id, movielink)
+                    movieID=dbobj.MovieNight_Add(ctx.message.guild.id, movietitle, movielink)
 
-                    response = f"""
-                    :white_check_mark::white_check_mark::white_check_mark: **MOVIE ADDED**
+                    embed = nextcord.Embed(
+                        title=f":white_check_mark::white_check_mark::white_check_mark: **MOVIE ADDED**",
+                        description=f"""
+                            **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
                     
-                    **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                    
-                    **MovieID**: {movieID}
-                    **Movie**: <{movielink}>
-                    """
-                    await ctx.send(textwrap.dedent(response))
+                            **MovieID**: {movieID}
+                            **Title**: {movietitle}
+                            **Movie**: <{movielink}>
+                        """,
+                    )
+                    await ctx.send(embed=embed)
                     await ctx.message.delete(delay=3)
-            
+
+
     @movie_add.error
     async def movie_add_error(self, ctx, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
-                "Sorry. You must provide a link!",
+                """Invalid Syntax: `bk!movie-add link` or `bk!movie-add "movie title" link`""",
                 delete_after=10,
             )
             await ctx.message.delete(delay=10)
@@ -101,15 +119,17 @@ class MovieNight(commands.Cog):
                 if result is not None:
                     dbobj.MovieNight_Remove(ctx.message.guild.id, result[0])
 
-                    response = f"""
-                    :no_entry_sign::no_entry_sign::no_entry_sign: **MOVIE REMOVED**
-
-                    **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                    
-                    **MovieID**:  {result[0]}
-                    **Movie**: <{result[2]}>
-                    """
-                    await ctx.send(textwrap.dedent(response))
+                    embed = nextcord.Embed(
+                        title=f":x::x::x: **MOVIE REMOVED**",
+                        description=f"""
+                            **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
+                            
+                            **MovieID**:  {result[0]}
+                            **Title**: {result[2]}
+                            **Movie**: <{result[3]}>
+                        """,
+                    )
+                    await ctx.send(embed=embed)
                     await ctx.message.delete(delay=3)
                 else:
                     await ctx.send(
@@ -146,7 +166,8 @@ class MovieNight(commands.Cog):
                 **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
                 
                 **MovieID**:  {result[0]}
-                **Movie**: {result[2]}
+                **Title**: {result[2]}
+                **Movie**: {result[3]}
                 """
                 await ctx.send(textwrap.dedent(response))
             else:
@@ -190,7 +211,7 @@ class MovieNight(commands.Cog):
                     
                     #do the boolean toggle
                     switch = 0
-                    if result[3] == 0:
+                    if result[4] == 0:
                         switch = 1
 
                     changed = dbobj.MovieNight_Watched(ctx.message.guild.id, result[0], switch)
@@ -200,16 +221,21 @@ class MovieNight(commands.Cog):
                     else:
                         boolChk = self.bool_string(switch)
 
-                        response = f"""
-                        :eyes::eyes::eyes: **MOVIE WATCHED**
-                        **WATCHED:**  {boolChk}
+                        embed = nextcord.Embed(
+                            title=f":eyes::eyes::eyes: **MOVIE WATCHED**",
+                            description=f"""
+                                **WATCHED:**  {boolChk}
 
-                        **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                        
-                        **MovieID**:  {result[0]}
-                        """
-                        await ctx.send(textwrap.dedent(response))
+                                **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
+                                
+                                **MovieID**:  {result[0]}
+                                **Title**: {result[2]}
+                                **Movie**: <{result[3]}>
+                            """,
+                        )
+                        await ctx.send(embed=embed)
                         await ctx.message.delete(delay=3)
+
                 else:
                     await ctx.send(
                         "No movie with the MovieID or link was found!",
@@ -253,7 +279,7 @@ class MovieNight(commands.Cog):
                     
                     #do the boolean toggle
                     switch = 0
-                    if result[4] == 0:
+                    if result[5] == 0:
                         switch = 1
         
                     changed = dbobj.MovieNight_Fame(ctx.message.guild.id, result[0], switch)
@@ -263,16 +289,21 @@ class MovieNight(commands.Cog):
                     else:
                         boolChk = self.bool_string(switch)
 
-                        response = f"""
-                        :trophy::trophy::trophy: **MOVIE FAME**
-                        **FAME:**  {boolChk}
+                        embed = nextcord.Embed(
+                            title=f":trophy::trophy::trophy: **MOVIE FAME**",
+                            description=f"""
+                                **FAME:**  {boolChk}
 
-                        **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
-                        
-                        **MovieID**:  {result[0]}
-                        """
-                        await ctx.send(textwrap.dedent(response))
+                                **User**: {ctx.author.mention} [{ctx.author.name}] <{ctx.author.display_name}>
+                                
+                                **MovieID**:  {result[0]}
+                                **Title**: {result[2]}
+                                **Movie**: <{result[3]}>
+                            """,
+                        )
+                        await ctx.send(embed=embed)
                         await ctx.message.delete(delay=3)
+
                 else:
                     await ctx.send(
                         "No movie with the MovieID or link was found!",
@@ -313,19 +344,23 @@ class MovieNight(commands.Cog):
                 result = dbobj.MovieNight_Get(ctx.message.guild.id, movielink)
                 if result is not None:
 
-                    watched = self.bool_string(result[3])
-                    fame = self.bool_string(result[4])
+                    watched = self.bool_string(result[4])
+                    fame = self.bool_string(result[5])
 
-                    response = f"""
-                    :question::question::question: **MOVIE INFO**
+                    embed = nextcord.Embed(
+                        title=f":question::question::question: **MOVIE INFO**",
+                        description=f"""
+                            :eyes:  **WATCHED:**  {watched}
+                            :trophy:  **FAME:**  {fame}
 
-                    :eyes: **WATCHED:**  {watched}
-                    :trophy: **FAME:**  {fame}
-
-                    **MovieID**:  {result[0]}
-                    **Movie**: {result[2]}
-                    """
-                    await ctx.send(textwrap.dedent(response))
+                            **MovieID**:  {result[0]}
+                            **Title**: {result[2]}
+                            **Movie**: <{result[3]}>
+                        """,
+                    )
+                    await ctx.send(embed=embed)
+                    await ctx.message.delete(delay=3)
+                    
                 else:
                     await ctx.send(
                         "No movie with the MovieID or link was found!",
@@ -366,7 +401,7 @@ class MovieNight(commands.Cog):
                     
                     response = ":mag::mag::mag:  **MOVIE FIND**\n\n"
                     for row in result:
-                        response=response+f"**MovieID**:   {row[0]}   |   **WATCHED:**   {self.bool_string(row[3])}   |   **FAME:**   {self.bool_string(row[4])}   |   **Movie**:   <{row[2]}>\n"
+                        response=response+f"**MovieID**:  {row[0]}  |  **WATCHED:**  {self.bool_string(row[4])}  |  **FAME:**  {self.bool_string(row[5])}  |  **Title**:  {row[2]}  |  **Movie**:  <{row[3]}>\n\n"
 
                     await ctx.send(response)
                 else:

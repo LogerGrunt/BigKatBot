@@ -1,6 +1,10 @@
 token.py
 requirements.txt
+notes.txt
+movie_query.sql
 __pycache__/bot_token.cpython-310.pyc
 logs/
 __pycache__/
 bot_token.py
+
+bot_database.db

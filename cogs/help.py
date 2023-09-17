@@ -10,15 +10,27 @@ class HelpCommand(commands.Cog):
 
         embed = nextcord.Embed(
             title=f"About {self.bot.user.name}",
-            description=f"""**:calendar:  Event Tracking:**
-            Event tracking stuff.
+            description=f"""**:information_source:  IMPORTANT NOTE:**
+            Please use quotes when passing long text strings as parameters for commands.
+            In addition please use spaces to separate multiple passing parameters.
+            
+            :white_check_mark: **EXAMPLE**: `bk!movie-add "A Big Red Apple" MovielinkHere`
+            :white_check_mark:  **EXAMPLE**: `bk!movie-find "A Big Red Apple"`
+            :x: **DO NOT DO THIS**:  `bk!movie-find A Big Red Apple`
 
             """,
         )
         embed.add_field(
+            name=":calendar:  Event Tracking:",
+            value=f"""
+                        Event tracking stuff.
+                        """,
+            inline=False,
+        )
+        embed.add_field(
             name=":cinema:  Movie Night Commands",
             value=f"""
-                        `{ctx.prefix}movie-add link/url`
+                        `{ctx.prefix}movie-add "movie title" link/url` or `{ctx.prefix}movie-add link/url`
                         Adds a movie to the database.
                         
                         `{ctx.prefix}movie-remove MovieID or link/url`
