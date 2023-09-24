@@ -8,3 +8,4 @@ __pycache__/
 bot_token.py
 
 bot_database.db
+bot_database copy.db
