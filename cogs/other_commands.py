@@ -7,10 +7,10 @@ log = logging.getLogger('root')
 
 class OtherCommands(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: nextcord.Client = bot
 
     @commands.command(name="spank")
-    async def spank_command(self, ctx, member: nextcord.Member):
+    async def spank_command(self, ctx:commands.Context, member: nextcord.Member):
         guild = ctx.guild
         emoji = nextcord.utils.get(guild.emojis, name="spank_smirk")
         embed = nextcord.Embed(
@@ -22,7 +22,7 @@ class OtherCommands(commands.Cog):
         await ctx.message.delete(delay=3)
 
     @spank_command.error
-    async def spank_command_error(self, ctx, error):
+    async def spank_command_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -33,5 +33,5 @@ class OtherCommands(commands.Cog):
         else:
             log.error(f"[%s] {error}", __class__.__name__)
 
-def setup(bot):
+def setup(bot:nextcord.Client):
     bot.add_cog(OtherCommands(bot))

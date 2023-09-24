@@ -6,6 +6,8 @@ import bot_token
 import logging
 from logging.handlers import RotatingFileHandler
 import dbwrapper
+from aiohttp import connector
+from event_utils import EventUtils as Events
 
 log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
 
@@ -32,13 +34,14 @@ intents = nextcord.Intents.all()
 bot = commands.Bot(
     command_prefix=prefix, help_command=None, case_insensitive=True, intents=intents
 )
-
+eventObj = Events(bot)
 
 """
 Load cog extensions for bot
 """
 for filename in os.listdir("./cogs"):
    if filename.endswith(".py"):
+       #log.warning(f"[%s] cogs.{filename[:0-3]}", "MAIN")
        bot.load_extension(f"cogs.{filename[:0-3]}")
 
 
@@ -53,10 +56,15 @@ async def on_ready():
     with dbwrapper.DiscordDB() as dbobj:
         dbobj.CheckTables()
 
+    #get the updated events and store them in DB
+    #make sure to update the bot object with the updated cache
+    eventObj.setBot(bot)
+    await eventObj.update_events_db()
+
     log.warning(f"[%s] {bot.user.name} is connected and ready!", "MAIN")
 
 @bot.event
-async def on_command_error(ctx, error):
+async def on_command_error(ctx:commands.Context, error):
     if isinstance(error, commands.CommandNotFound):
         command = ctx.invoked_with
         await ctx.send(f"The command [`{command}`] you have executed is not found.  Please use `{ctx.prefix}help`")
@@ -64,5 +72,29 @@ async def on_command_error(ctx, error):
         command = ctx.invoked_with
         await ctx.send(f"You don't have permission for that command.")
 
+@bot.event
+async def on_guild_scheduled_event_create(event:nextcord.ScheduledEvent):
+    eventObj.add_event(event)
+
+@bot.event
+async def on_guild_scheduled_event_update(before_event:nextcord.ScheduledEvent, after_event:nextcord.ScheduledEvent):
+   eventObj.update_event(after_event)
+
+@bot.event
+async def on_guild_scheduled_event_delete(event:nextcord.ScheduledEvent):
+    eventObj.remove_event(event)
+
+
 if __name__ == "__main__":
-    bot.run(bot_token.TOKEN)
+    try:
+        bot.run(bot_token.TOKEN)
+    except connector.ClientConnectorError:
+        pass
+
+
+#while True:
+#    try:                
+#        bot.run(botToken)
+#    except Exception as e:
+#        print(f'Restarting in 10s\nError: {e}')
+#        sleep(10)

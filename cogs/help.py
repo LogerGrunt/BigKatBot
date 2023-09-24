@@ -7,10 +7,10 @@ log = logging.getLogger('root')
 
 class HelpCommand(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: nextcord.Client = bot
 
     @commands.command(name="help")
-    async def help_command(self, ctx):
+    async def help_command(self, ctx:commands.Context):
 
         embed = nextcord.Embed(
             title="BigKatBot Help",
@@ -95,5 +95,5 @@ class HelpCommand(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot:nextcord.Client):
     bot.add_cog(HelpCommand(bot))

@@ -8,7 +8,7 @@ log = logging.getLogger('root')
 
 class ConfigureChannels(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: nextcord.Client = bot
 
     """
     Configure command for updating announcement channel
@@ -16,7 +16,7 @@ class ConfigureChannels(commands.Cog):
 
     @commands.command(name="set-announce")
     @commands.has_permissions(manage_channels=True)
-    async def announce_config(self, ctx, channel):
+    async def announce_config(self, ctx:commands.Context, channel:str):
 
         """
         Takes a channel ID as an arguement (906217502554599425)
@@ -30,11 +30,12 @@ class ConfigureChannels(commands.Cog):
         """
         channel = channel.replace("[", "").replace("]", "")  # if ID is wrapped in []
         channel = channel.replace("<#", "").replace(">", "")  # if <#channelid> remove <# and >
-        channel = self.bot.get_channel(int(channel))
-        if channel is None:
+        channelObj = self.bot.get_channel(int(channel))
+        
+        if channelObj is None:
             await ctx.send("There is no channel with that ID.", delete_after=10)
         else:
-            channel_id = str(channel.id)
+            channel_id = str(channelObj.id)
             channel_name = f"<#{channel_id}>"
 
             #log.warning(f"Debug1: [%s] {ctx.message.guild.id}")
@@ -56,7 +57,7 @@ class ConfigureChannels(commands.Cog):
             await ctx.message.delete(delay=10)
 
     @announce_config.error
-    async def announce_config_error(self, ctx, error):
+    async def announce_config_error(self, ctx:commands.Context, error):
         """
         Error check, if command user is missing permission, error message
         sent to command channel.
@@ -79,5 +80,5 @@ class ConfigureChannels(commands.Cog):
         else:
             log.error(f"[%s] {error}", __class__.__name__)
 
-def setup(bot):
+def setup(bot:nextcord.Client):
     bot.add_cog(ConfigureChannels(bot))

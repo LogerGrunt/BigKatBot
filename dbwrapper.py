@@ -46,7 +46,8 @@ class DiscordDB(object):
         try:
             self.cur.executescript(""" 
                 CREATE TABLE IF NOT EXISTS CHANNELS(guild_id BIGINT, keyname TEXT, value TEXT);
-                CREATE TABLE IF NOT EXISTS MOVIENIGHT(id INTEGER PRIMARY KEY AUTOINCREMENT, guild_id BIGINT, title TEXT, link TEXT, watched BOOLEAN DEFAULT FALSE, fame BOOLEAN  DEFAULT FALSE);
+                CREATE TABLE IF NOT EXISTS MOVIENIGHT(id INTEGER PRIMARY KEY AUTOINCREMENT, guild_id BIGINT, title TEXT, link TEXT, watched BOOLEAN DEFAULT FALSE, fame BOOLEAN DEFAULT FALSE);
+                CREATE TABLE IF NOT EXISTS EVENTS(id BIGINT, guild_id BIGINT, title TEXT, start_time TIMESTAMP, end_time TIMESTAMP, alert BOOLEAN DEFAULT FALSE);
             """)
         except Error as e:
             log.error(f"[%s] {e}", __class__.__name__)
@@ -207,6 +208,88 @@ class DiscordDB(object):
             else:
                 return None
             
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def Events_Get(self, guild_id, event_id):
+        try:
+            if self.is_integer(event_id) is True:
+                self.cur.execute(
+                    "SELECT * FROM EVENTS WHERE guild_id = ? AND id = ?;", (guild_id, event_id,)
+                )
+
+            result = self.cur.fetchone()
+
+            if result is not None:
+                return result
+            else:
+                return None
+            
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def Events_Add(self, guild_id, event_id, title, start_time, end_time):
+        try:
+            self.cur.execute(
+                "INSERT INTO EVENTS (id, guild_id, title, start_time, end_time) VALUES (?, ?, ?, ?, ?);", (event_id, guild_id, title, start_time, end_time,)
+            )
+            self.con.commit()
+            self.cur.execute(
+                "SELECT last_insert_rowid() FROM EVENTS;"
+            )
+            result = self.cur.fetchone()
+
+            if result is not None:
+                return result
+            else:
+                return None
+
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def Events_Remove(self, guild_id, event_id):
+        try:
+            self.cur.execute(
+                "DELETE FROM EVENTS WHERE guild_id = ? AND id = ?;", (guild_id, event_id,)
+            )
+            self.con.commit()
+
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def Events_Update(self, guild_id, event_id, title, start_time, end_time):
+        try:
+            self.cur.execute(
+                "UPDATE EVENTS SET title = ?, start_time = ?, end_time = ? WHERE guild_id = ? AND id = ?;", (title, start_time, end_time, guild_id, event_id,)
+            )
+            self.con.commit()
+
+            #check for changes
+            if self.cur.rowcount < 1:
+                return False
+            else:
+                return True
+
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def Events_Clear(self):
+        try:
+            self.cur.execute(
+                "DELETE FROM EVENTS;",
+            )
+            self.con.commit()
+
         except Error as e:
             log.error(f"[%s] {e}", __class__.__name__)
         except Exception as e:

@@ -12,7 +12,7 @@ log = logging.getLogger('root')
 
 class MovieNight(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: nextcord.Client = bot
 
     def is_integer(self, n):
         try:
@@ -30,7 +30,7 @@ class MovieNight(commands.Cog):
         return boolChk
 
     @commands.command(name="movie-add")
-    async def movie_add(self, ctx, movietitle, movielink=None):
+    async def movie_add(self, ctx:commands.Context, movietitle, movielink=None):
         
         """
         Takes a link
@@ -99,7 +99,7 @@ class MovieNight(commands.Cog):
 
 
     @movie_add.error
-    async def movie_add_error(self, ctx, error):
+    async def movie_add_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -112,7 +112,7 @@ class MovieNight(commands.Cog):
 
     @commands.command(name="movie-remove")
     @commands.has_permissions(manage_channels=True)
-    async def movie_remove(self, ctx, movielink):
+    async def movie_remove(self, ctx:commands.Context, movielink):
 
         """
         Takes a link or movieID
@@ -168,7 +168,7 @@ class MovieNight(commands.Cog):
                     await ctx.message.delete(delay=3)
             
     @movie_remove.error
-    async def movie_remove_error(self, ctx, error):
+    async def movie_remove_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -180,7 +180,7 @@ class MovieNight(commands.Cog):
             log.error(f"[%s] {error}", __class__.__name__)
 
     @commands.command(name="movie-random")
-    async def movie_random(self, ctx):
+    async def movie_random(self, ctx:commands.Context):
 
         """
         All messages and commands are cleared after 10 seconds to keep
@@ -207,7 +207,7 @@ class MovieNight(commands.Cog):
                 await ctx.message.delete(delay=3)
             
     @movie_random.error
-    async def movie_random_error(self, ctx, error):
+    async def movie_random_error(self, ctx:commands.Context, error):
         await ctx.send(
             "Sorry. There was an error retrieving a random.",
             delete_after=10,
@@ -218,7 +218,7 @@ class MovieNight(commands.Cog):
 
     @commands.command(name="movie-watched")
     @commands.has_permissions(manage_channels=True)
-    async def movie_watched(self, ctx, movielink):
+    async def movie_watched(self, ctx:commands.Context, movielink):
 
         """
         Takes a link or movieID and toggles between true or false
@@ -291,7 +291,7 @@ class MovieNight(commands.Cog):
                     await ctx.message.delete(delay=3)
             
     @movie_watched.error
-    async def movie_watched_error(self, ctx, error):
+    async def movie_watched_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -304,7 +304,7 @@ class MovieNight(commands.Cog):
 
     @commands.command(name="movie-fame")
     @commands.has_permissions(manage_channels=True)
-    async def movie_fame(self, ctx, movielink):
+    async def movie_fame(self, ctx:commands.Context, movielink):
 
         """
         Takes a link or movieID and toggles between true or false
@@ -377,7 +377,7 @@ class MovieNight(commands.Cog):
                     await ctx.message.delete(delay=3)
             
     @movie_fame.error
-    async def movie_fame_error(self, ctx, error):
+    async def movie_fame_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -389,7 +389,7 @@ class MovieNight(commands.Cog):
             log.error(f"[%s] {error}", __class__.__name__)
 
     @commands.command(name="movie-info")
-    async def movie_info(self, ctx, movielink):
+    async def movie_info(self, ctx:commands.Context, movielink):
 
         """
         Takes a link or movieID
@@ -458,7 +458,7 @@ class MovieNight(commands.Cog):
                     await ctx.message.delete(delay=3)
             
     @movie_info.error
-    async def movie_info_error(self, ctx, error):
+    async def movie_info_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -471,7 +471,7 @@ class MovieNight(commands.Cog):
 
 
     @commands.command(name="movie-find")
-    async def movie_find(self, ctx, findstr):
+    async def movie_find(self, ctx:commands.Context, findstr):
 
         """
         Takes a string to search if links contains the search string
@@ -501,7 +501,7 @@ class MovieNight(commands.Cog):
                     await ctx.message.delete(delay=3)
             
     @movie_find.error
-    async def movie_find_error(self, ctx, error):
+    async def movie_find_error(self, ctx:commands.Context, error):
 
         if isinstance(error, MissingRequiredArgument):
             await ctx.send(
@@ -513,5 +513,5 @@ class MovieNight(commands.Cog):
             log.error(f"[%s] {error}", __class__.__name__)
 
 
-def setup(bot):
+def setup(bot:nextcord.Client):
     bot.add_cog(MovieNight(bot))
