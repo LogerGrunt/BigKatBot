@@ -295,6 +295,36 @@ class DiscordDB(object):
         except Exception as e:
             log.error(f"[%s] {e}", __class__.__name__)
 
+    def Events_Clear_Guild(self, guild_id):
+        try:
+            self.cur.execute(
+                "DELETE FROM EVENTS WHERE guild_id = ?", (guild_id,)
+            )
+            self.con.commit()
+
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
+    def Events_List(self):
+        try:
+            numrows = self.cur.execute(
+                "SELECT * FROM EVENTS WHERE alert = FALSE",
+            )
+            result = self.cur.fetchall()
+
+            #len of results will return the amount of rows
+            if result is not None and len(result) > 0:
+                return result
+            else:
+                return None
+            
+        except Error as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+        except Exception as e:
+            log.error(f"[%s] {e}", __class__.__name__)
+
     def Commit(self):
         self.con.commit()
 

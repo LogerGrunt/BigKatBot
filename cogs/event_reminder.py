@@ -3,6 +3,9 @@ from nextcord.ext import tasks, commands
 from nextcord.ext.commands import has_permissions, MissingPermissions, MissingRequiredArgument
 import dbwrapper
 import logging
+import event_utils
+from datetime import datetime, timezone
+import time
 
 log = logging.getLogger('root')
 
@@ -14,10 +17,28 @@ class EventReminder(commands.Cog):
     def cog_unload(self):
         self.EventChecks.cancel()
 
-    @tasks.loop(seconds=5.0)
+    @tasks.loop(minutes=1)
     async def EventChecks(self):
-        for guild in self.bot.guilds:
-            log.warning(f"[%s] {guild.name} | {guild.id}", "EventReminder")
+        #for guild in self.bot.guilds:
+        #    log.warning(f"[%s] {guild.name} | {guild.id}", "EventReminder")
+        with dbwrapper.DiscordDB() as dbobj:
+            result = dbobj.Events_List()
+            if result is not None:
+                for row in result:
+
+                    #https://stackoverflow.com/questions/12281975/convert-timestamps-with-offset-to-datetime-obj-using-strptime
+                    #https://ehmatthes.com/blog/faster_than_strptime/#using-datetimefromisoformat
+                    start_time = datetime.fromisoformat(row[3])
+                    #print("type1", start_time.month, start_time.day, start_time.year, start_time.hour, start_time.minute, start_time.tzinfo)
+
+                    # Convert to Unix timestamp
+                    #https://stackoverflow.com/questions/796008/cant-subtract-offset-naive-and-offset-aware-datetimes
+                    d1_ts = time.mktime(datetime.now(timezone.utc).timetuple())
+                    d2_ts = time.mktime(start_time.timetuple())
+
+                    # They are now in seconds, subtract and then divide by 60 to get minutes.
+                    print('x', int(d2_ts-d1_ts) / 60)
+                    print('end')
 
     #@EventChecks.before_loop
     #async def before_EventChecks(self):

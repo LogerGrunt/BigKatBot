@@ -6,8 +6,8 @@ import bot_token
 import logging
 from logging.handlers import RotatingFileHandler
 import dbwrapper
+import event_utils
 from aiohttp import connector
-from event_utils import EventUtils as Events
 
 log_formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
 
@@ -34,7 +34,7 @@ intents = nextcord.Intents.all()
 bot = commands.Bot(
     command_prefix=prefix, help_command=None, case_insensitive=True, intents=intents
 )
-eventObj = Events(bot)
+eventObj = event_utils.EventUtils(bot)
 
 """
 Load cog extensions for bot
@@ -78,12 +78,11 @@ async def on_guild_scheduled_event_create(event:nextcord.ScheduledEvent):
 
 @bot.event
 async def on_guild_scheduled_event_update(before_event:nextcord.ScheduledEvent, after_event:nextcord.ScheduledEvent):
-   eventObj.update_event(after_event)
+   await eventObj.update_guild_events(after_event)
 
 @bot.event
 async def on_guild_scheduled_event_delete(event:nextcord.ScheduledEvent):
     eventObj.remove_event(event)
-
 
 if __name__ == "__main__":
     try:
