@@ -36,9 +36,8 @@ bot = commands.Bot(
 )
 eventObj = event_utils.EventUtils(bot)
 
-"""
-Load cog extensions for bot
-"""
+# Load cog extensions for bot
+
 for filename in os.listdir("./cogs"):
    if filename.endswith(".py"):
        #log.warning(f"[%s] cogs.{filename[:0-3]}", "MAIN")
@@ -50,9 +49,9 @@ for filename in os.listdir("./cogs"):
 
 @bot.event
 async def on_ready():
-    """
-    Simple, on-ready event that logs to console when bot is connected and ready
-    """
+    
+    #Simple, on-ready event that logs to console when bot is connected and ready
+
     with dbwrapper.DiscordDB() as dbobj:
         dbobj.CheckTables()
 
@@ -90,10 +89,11 @@ if __name__ == "__main__":
     except connector.ClientConnectorError:
         pass
 
-
-#while True:
-#    try:                
-#        bot.run(botToken)
-#    except Exception as e:
-#        print(f'Restarting in 10s\nError: {e}')
-#        sleep(10)
+'''
+while True:
+    try:                
+        bot.run(botToken)
+    except Exception as e:
+        print(f'Restarting in 10s\nError: {e}')
+        sleep(10)
+'''
